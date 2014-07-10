@@ -12,9 +12,11 @@ import javax.inject.Inject;
 import pl.charmas.shoppinglist.base.BaseListActivity;
 import pl.charmas.shoppinglist.products.core.boundaries.ProductBoundary;
 import pl.charmas.shoppinglist.products.core.boundaries.ProductListBoundary;
+import pl.charmas.shoppinglist.products.core.boundaries.ProductRemovedBoundary;
 import pl.charmas.shoppinglist.products.core.boundaries.StatusToChangeBoundary;
 import pl.charmas.shoppinglist.products.core.usecase.ChangeProductBoughtStatusUseCase;
 import pl.charmas.shoppinglist.products.core.usecase.ListProductsUseCase;
+import pl.charmas.shoppinglist.products.core.usecase.RemoveAllBoughtProductsUseCase;
 import pl.charmas.shoppinglist.view.products.viewmodel.ProductViewModel;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -27,26 +29,15 @@ public class ProductListActivity extends BaseListActivity {
     @Inject
     ChangeProductBoughtStatusUseCase changeProductBoughtStatusUseCase;
 
+    @Inject
+    RemoveAllBoughtProductsUseCase removeAllBoughtProductsUseCase;
+
     private Subscription productListSubscription;
 
     @Override
     protected void onStart() {
         super.onStart();
         refreshProductList();
-    }
-
-    private void refreshProductList() {
-        unsubscribeFromProductList();
-        productListSubscription = listProductsUseCase.execute()
-                .map(new MapProductListBoundaryToViewModel())
-                .subscribe(new PresentProductListAction());
-    }
-
-    private void unsubscribeFromProductList() {
-        if (productListSubscription != null) {
-            productListSubscription.unsubscribe();
-            productListSubscription = null;
-        }
     }
 
     @Override
@@ -66,7 +57,28 @@ public class ProductListActivity extends BaseListActivity {
                 return true;
             }
         });
+
+        MenuItem removeAllBoughtItem = menu.add("Remove bought");
+        removeAllBoughtItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                removeAllBoughtItems();
+                return false;
+            }
+        });
         return true;
+    }
+
+    private void removeAllBoughtItems() {
+        removeAllBoughtProductsUseCase
+                .execute()
+                .subscribe(new Action1<List<ProductRemovedBoundary>>() {
+                    @Override
+                    public void call(List<ProductRemovedBoundary> productRemovedBoundaries) {
+                        refreshProductList();
+
+                    }
+                });
     }
 
     private void updateProductStatus(long productId, boolean isBought) {
@@ -78,6 +90,20 @@ public class ProductListActivity extends BaseListActivity {
                         refreshProductList();
                     }
                 });
+    }
+
+    private void refreshProductList() {
+        unsubscribeFromProductList();
+        productListSubscription = listProductsUseCase.execute()
+                .map(new MapProductListBoundaryToViewModel())
+                .subscribe(new PresentProductListAction());
+    }
+
+    private void unsubscribeFromProductList() {
+        if (productListSubscription != null) {
+            productListSubscription.unsubscribe();
+            productListSubscription = null;
+        }
     }
 
     private class PresentProductListAction implements Action1<List<ProductViewModel>> {
