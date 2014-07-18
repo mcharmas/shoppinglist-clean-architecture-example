@@ -2,10 +2,11 @@ package pl.charmas.shoppinglist.products.core.usecase;
 
 import javax.inject.Inject;
 
+import pl.charmas.shoppinglist.common.usecase.UseCase;
 import pl.charmas.shoppinglist.products.core.boundaries.ProductRemovedBoundary;
 import pl.charmas.shoppinglist.products.core.datasource.ProductsDataSource;
 
-public class RemoveProductUseCase {
+public class RemoveProductUseCase implements UseCase<ProductRemovedBoundary, Long> {
     private final ProductsDataSource productsDataSource;
 
     @Inject
@@ -13,7 +14,8 @@ public class RemoveProductUseCase {
         this.productsDataSource = productsDataSource;
     }
 
-    public ProductRemovedBoundary execute(final long productId) {
+    @Override
+    public ProductRemovedBoundary execute(final Long productId) {
         productsDataSource.removeProduct(productId);
         return new ProductRemovedBoundary(productId);
     }

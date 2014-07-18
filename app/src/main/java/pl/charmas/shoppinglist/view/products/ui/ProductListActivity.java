@@ -10,6 +10,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import pl.charmas.shoppinglist.base.BaseListActivity;
+import pl.charmas.shoppinglist.common.rx.AsyncUseCase;
 import pl.charmas.shoppinglist.products.core.boundaries.ProductBoundary;
 import pl.charmas.shoppinglist.products.core.boundaries.ProductListBoundary;
 import pl.charmas.shoppinglist.products.core.boundaries.StatusToChangeBoundary;
@@ -17,6 +18,9 @@ import pl.charmas.shoppinglist.products.core.usecase.ChangeProductBoughtStatusUs
 import pl.charmas.shoppinglist.products.core.usecase.ListProductsUseCase;
 import pl.charmas.shoppinglist.products.core.usecase.RemoveAllBoughtProductsUseCase;
 import pl.charmas.shoppinglist.view.products.viewmodel.ProductViewModel;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class ProductListActivity extends BaseListActivity {
     @Inject
@@ -70,7 +74,15 @@ public class ProductListActivity extends BaseListActivity {
     }
 
     private void refreshProductList() {
-        productListPresenter.present(listProductsUseCase.execute());
+        AsyncUseCase.wrap(listProductsUseCase)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ProductListBoundary>() {
+                    @Override
+                    public void call(ProductListBoundary productListBoundary) {
+                        productListPresenter.present(listProductsUseCase.execute());
+                    }
+                });
     }
 
     private class ProductListPresenter {

@@ -5,11 +5,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import pl.charmas.shoppinglist.common.usecase.UseCaseArgumentless;
 import pl.charmas.shoppinglist.products.core.boundaries.ProductRemovedBoundary;
 import pl.charmas.shoppinglist.products.core.datasource.ProductsDataSource;
 import pl.charmas.shoppinglist.products.core.gateway.ProductGateway;
 
-public class RemoveAllBoughtProductsUseCase {
+public class RemoveAllBoughtProductsUseCase implements UseCaseArgumentless<List<ProductRemovedBoundary>> {
     private final RemoveProductUseCase removeProductUseCase;
     private final ProductsDataSource productsDataSource;
 

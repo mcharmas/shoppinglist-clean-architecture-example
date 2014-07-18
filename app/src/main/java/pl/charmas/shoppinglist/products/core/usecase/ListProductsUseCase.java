@@ -5,12 +5,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import pl.charmas.shoppinglist.common.usecase.UseCaseArgumentless;
 import pl.charmas.shoppinglist.products.core.boundaries.ProductBoundary;
 import pl.charmas.shoppinglist.products.core.boundaries.ProductListBoundary;
 import pl.charmas.shoppinglist.products.core.datasource.ProductsDataSource;
 import pl.charmas.shoppinglist.products.core.gateway.ProductGateway;
 
-public class ListProductsUseCase {
+public class ListProductsUseCase implements UseCaseArgumentless<ProductListBoundary> {
     private final ProductsDataSource productsDataSource;
 
     @Inject
@@ -18,6 +19,7 @@ public class ListProductsUseCase {
         this.productsDataSource = productsDataSource;
     }
 
+    @Override
     public ProductListBoundary execute() {
         List<ProductGateway> allProducts = productsDataSource.listAll();
         List<ProductBoundary> boundaries = new ArrayList<>();
