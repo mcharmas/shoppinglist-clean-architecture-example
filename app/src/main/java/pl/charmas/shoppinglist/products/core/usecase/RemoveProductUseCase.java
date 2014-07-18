@@ -4,8 +4,6 @@ import javax.inject.Inject;
 
 import pl.charmas.shoppinglist.products.core.boundaries.ProductRemovedBoundary;
 import pl.charmas.shoppinglist.products.core.datasource.ProductsDataSource;
-import rx.Observable;
-import rx.Subscriber;
 
 public class RemoveProductUseCase {
     private final ProductsDataSource productsDataSource;
@@ -15,15 +13,8 @@ public class RemoveProductUseCase {
         this.productsDataSource = productsDataSource;
     }
 
-    public Observable<ProductRemovedBoundary> execute(final long productId) {
-        return Observable.create(new Observable.OnSubscribe<ProductRemovedBoundary>() {
-            @Override
-            public void call(Subscriber<? super ProductRemovedBoundary> subscriber) {
-                productsDataSource.removeProduct(productId);
-                subscriber.onNext(new ProductRemovedBoundary(productId));
-                subscriber.onCompleted();
-            }
-        });
+    public ProductRemovedBoundary execute(final long productId) {
+        productsDataSource.removeProduct(productId);
+        return new ProductRemovedBoundary(productId);
     }
-
 }

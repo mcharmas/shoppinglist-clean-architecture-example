@@ -12,15 +12,11 @@ import javax.inject.Inject;
 import pl.charmas.shoppinglist.base.BaseListActivity;
 import pl.charmas.shoppinglist.products.core.boundaries.ProductBoundary;
 import pl.charmas.shoppinglist.products.core.boundaries.ProductListBoundary;
-import pl.charmas.shoppinglist.products.core.boundaries.ProductRemovedBoundary;
 import pl.charmas.shoppinglist.products.core.boundaries.StatusToChangeBoundary;
 import pl.charmas.shoppinglist.products.core.usecase.ChangeProductBoughtStatusUseCase;
 import pl.charmas.shoppinglist.products.core.usecase.ListProductsUseCase;
 import pl.charmas.shoppinglist.products.core.usecase.RemoveAllBoughtProductsUseCase;
 import pl.charmas.shoppinglist.view.products.viewmodel.ProductViewModel;
-import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class ProductListActivity extends BaseListActivity {
     @Inject
@@ -32,19 +28,7 @@ public class ProductListActivity extends BaseListActivity {
     @Inject
     RemoveAllBoughtProductsUseCase removeAllBoughtProductsUseCase;
 
-    private Subscription productListSubscription;
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        refreshProductList();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unsubscribeFromProductList();
-    }
+    private final ProductListPresenter productListPresenter = new ProductListPresenter();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,46 +53,40 @@ public class ProductListActivity extends BaseListActivity {
         return true;
     }
 
-    private void removeAllBoughtItems() {
-        removeAllBoughtProductsUseCase
-                .execute()
-                .subscribe(new Action1<List<ProductRemovedBoundary>>() {
-                    @Override
-                    public void call(List<ProductRemovedBoundary> productRemovedBoundaries) {
-                        refreshProductList();
+    @Override
+    protected void onStart() {
+        super.onStart();
+        refreshProductList();
+    }
 
-                    }
-                });
+    private void removeAllBoughtItems() {
+        removeAllBoughtProductsUseCase.execute();
+        refreshProductList();
     }
 
     private void updateProductStatus(long productId, boolean isBought) {
-        changeProductBoughtStatusUseCase
-                .execute(new StatusToChangeBoundary(productId, isBought))
-                .subscribe(new Action1<ProductBoundary>() {
-                    @Override
-                    public void call(ProductBoundary productBoundary) {
-                        refreshProductList();
-                    }
-                });
+        changeProductBoughtStatusUseCase.execute(new StatusToChangeBoundary(productId, isBought));
+        refreshProductList();
     }
 
     private void refreshProductList() {
-        unsubscribeFromProductList();
-        productListSubscription = listProductsUseCase.execute()
-                .map(new MapProductListBoundaryToViewModel())
-                .subscribe(new PresentProductListAction());
+        productListPresenter.present(listProductsUseCase.execute());
     }
 
-    private void unsubscribeFromProductList() {
-        if (productListSubscription != null) {
-            productListSubscription.unsubscribe();
-            productListSubscription = null;
+    private class ProductListPresenter {
+        public void present(ProductListBoundary productListBoundary) {
+            present(mapToViewModel(productListBoundary));
         }
-    }
 
-    private class PresentProductListAction implements Action1<List<ProductViewModel>> {
-        @Override
-        public void call(List<ProductViewModel> productViewModels) {
+        private ArrayList<ProductViewModel> mapToViewModel(ProductListBoundary productListBoundary) {
+            ArrayList<ProductViewModel> productViewModels = new ArrayList<>();
+            for (ProductBoundary productBoundary : productListBoundary.getProducts()) {
+                productViewModels.add(ProductViewModel.createFrom(productBoundary));
+            }
+            return productViewModels;
+        }
+
+        private void present(List<ProductViewModel> productViewModels) {
             if (getListAdapter() != null) {
                 ProductListAdapter adapter = (ProductListAdapter) getListAdapter();
                 adapter.clear();
@@ -126,17 +104,6 @@ public class ProductListActivity extends BaseListActivity {
                         }
                 ));
             }
-        }
-    }
-
-    private static class MapProductListBoundaryToViewModel implements Func1<ProductListBoundary, List<ProductViewModel>> {
-        @Override
-        public List<ProductViewModel> call(ProductListBoundary productListBoundary) {
-            ArrayList<ProductViewModel> productViewModels = new ArrayList<>();
-            for (ProductBoundary productBoundary : productListBoundary.getProducts()) {
-                productViewModels.add(ProductViewModel.createFrom(productBoundary));
-            }
-            return productViewModels;
         }
     }
 }

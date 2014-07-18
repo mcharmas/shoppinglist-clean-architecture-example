@@ -9,10 +9,8 @@ import com.example.mcharmas.myapplication.R;
 import javax.inject.Inject;
 
 import pl.charmas.shoppinglist.base.BaseActivity;
-import pl.charmas.shoppinglist.products.core.boundaries.ProductBoundary;
 import pl.charmas.shoppinglist.products.core.boundaries.ProductToAddBoundary;
 import pl.charmas.shoppinglist.products.core.usecase.AddProductUseCase;
-import rx.functions.Action1;
 
 public class AddProductActivity extends BaseActivity {
     @Inject
@@ -26,14 +24,8 @@ public class AddProductActivity extends BaseActivity {
         findViewById(R.id.product_add_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addProductUseCase
-                        .execute(new ProductToAddBoundary(productNameView.getText().toString(), false))
-                        .subscribe(new Action1<ProductBoundary>() {
-                            @Override
-                            public void call(ProductBoundary productBoundary) {
-                                finish();
-                            }
-                        });
+                addProductUseCase.execute(new ProductToAddBoundary(productNameView.getText().toString(), false));
+                finish();
             }
         });
     }

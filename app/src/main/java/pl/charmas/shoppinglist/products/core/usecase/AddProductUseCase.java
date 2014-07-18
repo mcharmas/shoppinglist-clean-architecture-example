@@ -6,8 +6,6 @@ import pl.charmas.shoppinglist.products.core.boundaries.ProductBoundary;
 import pl.charmas.shoppinglist.products.core.boundaries.ProductToAddBoundary;
 import pl.charmas.shoppinglist.products.core.datasource.ProductsDataSource;
 import pl.charmas.shoppinglist.products.core.gateway.ProductGateway;
-import rx.Observable;
-import rx.Subscriber;
 
 public class AddProductUseCase {
     private final ProductsDataSource productsDataSource;
@@ -17,14 +15,8 @@ public class AddProductUseCase {
         this.productsDataSource = productsDataSource;
     }
 
-    public Observable<ProductBoundary> execute(final ProductToAddBoundary productToAddBoundary) {
-        return Observable.create(new Observable.OnSubscribe<ProductBoundary>() {
-            @Override
-            public void call(Subscriber<? super ProductBoundary> subscriber) {
-                ProductGateway product = productsDataSource.createProduct(productToAddBoundary.getName(), productToAddBoundary.isBought());
-                subscriber.onNext(new ProductBoundary(product.getId(), product.getName(), product.isBought()));
-                subscriber.onCompleted();
-            }
-        });
+    public ProductBoundary execute(final ProductToAddBoundary productToAddBoundary) {
+        ProductGateway product = productsDataSource.createProduct(productToAddBoundary.getName(), productToAddBoundary.isBought());
+        return new ProductBoundary(product.getId(), product.getName(), product.isBought());
     }
 }
