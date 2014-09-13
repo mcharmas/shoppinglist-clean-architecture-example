@@ -15,6 +15,9 @@ public class AddProductUseCase implements UseCase<Product, String> {
 
     @Override
     public Product execute(final String productName) {
+        if(productName == null || productName.trim().isEmpty()){
+            throw new IllegalArgumentException("Product name cannot be empty");
+        }
         return productsDataSource.createProduct(productName, false);
     }
 }
