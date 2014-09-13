@@ -12,9 +12,6 @@ import pl.charmas.shoppinglist.domain.usecase.ListProductsUseCase;
 import pl.charmas.shoppinglist.domain.usecase.RemoveAllBoughtProductsUseCase;
 import pl.charmas.shoppinglist.model.mappers.ProductToViewModelMapper;
 import pl.charmas.shoppinglist.ui.ProductListUI;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 import static pl.charmas.shoppinglist.domain.usecase.ChangeProductBoughtStatusUseCase.ChangeProductStatusRequest;
 
@@ -42,17 +39,17 @@ public class ProductListPresenter implements UILifecycleObserver, ProductListUI.
     }
 
     private void fetchProductList() {
-        AsyncUseCase
-                .wrap(listProductsUseCase)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Product>>() {
-                    @Override
-                    public void call(List<Product> products) {
-                        ui.hideProgress();
-                        ui.showProductList(mapper.toViewModel(products));
-                    }
-                });
+        AsyncUseCase.callback(listProductsUseCase).register(new AsyncUseCase.AsyncCallback<List<Product>>() {
+            @Override
+            public void onResultOk(List<Product> products) {
+                ui.showProductList(mapper.toViewModel(products));
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                presentError(throwable);
+            }
+        });
     }
 
     @Override
@@ -60,17 +57,23 @@ public class ProductListPresenter implements UILifecycleObserver, ProductListUI.
 
     }
 
+    private void presentError(Throwable throwable) {
+        // TODO: error handling
+    }
+
     @Override
     public void onRemoveBoughtProducts() {
-        AsyncUseCase.wrap(removeAllBoughtProductsUseCase)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        fetchProductList();
-                    }
-                });
+        AsyncUseCase.callback(removeAllBoughtProductsUseCase).register(new AsyncUseCase.AsyncCallback<Integer>() {
+            @Override
+            public void onResultOk(Integer result) {
+                fetchProductList();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                presentError(throwable);
+            }
+        });
     }
 
     @Override
@@ -80,13 +83,16 @@ public class ProductListPresenter implements UILifecycleObserver, ProductListUI.
 
     @Override
     public void onProductStatusChanged(long id, boolean isBought) {
-        AsyncUseCase.wrap(changeProductBoughtStatusUseCase, new ChangeProductStatusRequest(id, isBought))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
+        AsyncUseCase.callback(changeProductBoughtStatusUseCase, new ChangeProductStatusRequest(id, isBought))
+                .register(new AsyncUseCase.AsyncCallback<Product>() {
                     @Override
-                    public void call(Object o) {
+                    public void onResultOk(Product result) {
                         fetchProductList();
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        presentError(throwable);
                     }
                 });
     }
