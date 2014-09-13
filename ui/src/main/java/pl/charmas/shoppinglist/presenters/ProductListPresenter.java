@@ -15,20 +15,24 @@ import pl.charmas.shoppinglist.ui.ProductListUI;
 
 import static pl.charmas.shoppinglist.domain.usecase.ChangeProductBoughtStatusUseCase.ChangeProductStatusRequest;
 
-public class ProductListPresenter implements UILifecycleObserver, ProductListUI.UICallbacks {
-    private final ProductListUI ui;
+public class ProductListPresenter implements UILifecycleObserver, ProductListUI.UICallbacks, Presenter<ProductListUI> {
     private final ProductToViewModelMapper mapper;
     private final ListProductsUseCase listProductsUseCase;
     private final RemoveAllBoughtProductsUseCase removeAllBoughtProductsUseCase;
     private final ChangeProductBoughtStatusUseCase changeProductBoughtStatusUseCase;
+    private ProductListUI ui;
 
     @Inject
-    public ProductListPresenter(ProductListUI ui, ListProductsUseCase listProductsUseCase, ProductToViewModelMapper mapper, RemoveAllBoughtProductsUseCase removeAllBoughtProductsUseCase, ChangeProductBoughtStatusUseCase changeProductBoughtStatusUseCase) {
-        this.ui = ui;
+    public ProductListPresenter(ListProductsUseCase listProductsUseCase, ProductToViewModelMapper mapper, RemoveAllBoughtProductsUseCase removeAllBoughtProductsUseCase, ChangeProductBoughtStatusUseCase changeProductBoughtStatusUseCase) {
         this.listProductsUseCase = listProductsUseCase;
         this.mapper = mapper;
         this.removeAllBoughtProductsUseCase = removeAllBoughtProductsUseCase;
         this.changeProductBoughtStatusUseCase = changeProductBoughtStatusUseCase;
+    }
+
+    @Override
+    public void initialize(ProductListUI productListUI) {
+        this.ui = productListUI;
         this.ui.setUICallbacks(this);
     }
 
@@ -96,4 +100,5 @@ public class ProductListPresenter implements UILifecycleObserver, ProductListUI.
                     }
                 });
     }
+
 }

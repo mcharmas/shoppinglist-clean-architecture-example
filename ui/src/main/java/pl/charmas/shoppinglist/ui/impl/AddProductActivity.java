@@ -13,17 +13,21 @@ import dagger.Provides;
 import pl.charmas.shoppinglist.app.AppModule;
 import pl.charmas.shoppinglist.base.BaseActivity;
 import pl.charmas.shoppinglist.presenters.AddProductPresenter;
+import pl.charmas.shoppinglist.presenters.Presenter;
 import pl.charmas.shoppinglist.ui.AddProductUI;
 
 public class AddProductActivity extends BaseActivity implements AddProductUI {
+
     @Inject
-    AddProductPresenter addProductPresenter;
+    Presenter<AddProductUI> addProductPresenter;
+
     private UICallbacks uiCallbacks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerUILifecycleObserver(addProductPresenter);
+        addProductPresenter.initialize(this);
         setContentView(R.layout.activity_add_product);
         final EditText productNameView = (EditText) findViewById(R.id.product_name_view);
         findViewById(R.id.product_add_button).setOnClickListener(new View.OnClickListener() {
@@ -46,20 +50,14 @@ public class AddProductActivity extends BaseActivity implements AddProductUI {
 
     @Override
     protected Object createActivityScopedModule() {
-        return new AddProductModule(this);
+        return new AddProductModule();
     }
 
     @Module(injects = {AddProductActivity.class}, addsTo = AppModule.class)
     static class AddProductModule {
-        private final AddProductActivity activity;
-
-        AddProductModule(AddProductActivity activity) {
-            this.activity = activity;
-        }
-
         @Provides
-        AddProductUI provideAddProductUI() {
-            return this.activity;
+        Presenter<AddProductUI> provideAddProductUI(AddProductPresenter presenter) {
+            return presenter;
         }
     }
 

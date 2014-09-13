@@ -3,10 +3,12 @@ package pl.charmas.shoppinglist.base;
 import android.app.ListActivity;
 import android.os.Bundle;
 
+import dagger.ObjectGraph;
 import pl.charmas.shoppinglist.app.ProductListApp;
 
 public class BaseListActivity extends ListActivity {
     private final UILifecycleNotifier notifier = new UILifecycleNotifier();
+    private ObjectGraph objectGraph;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,10 +19,15 @@ public class BaseListActivity extends ListActivity {
     private void inject() {
         Object module = createActivityScopedModule();
         if (module != null) {
-            ProductListApp.get(this).graph().plus(module).inject(this);
+            objectGraph = TestActivityModules.plusTestModules(ProductListApp.get(this).graph(), module);
         } else {
-            ProductListApp.get(this).inject(this);
+            objectGraph = TestActivityModules.plusTestModules(ProductListApp.get(this).graph());
         }
+        objectGraph.inject(this);
+    }
+
+    public ObjectGraph getObjectGraph() {
+        return objectGraph;
     }
 
     protected Object createActivityScopedModule() {
