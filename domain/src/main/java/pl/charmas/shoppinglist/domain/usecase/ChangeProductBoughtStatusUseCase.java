@@ -19,7 +19,7 @@ public class ChangeProductBoughtStatusUseCase implements UseCase<Product, Change
         Product currentProduct = productsDataSource.getProduct(request.productId);
         Product product = new Product(currentProduct.getId(), currentProduct.getName(), currentProduct.isBought());
         Product updatedProduct;
-        if (request.boughStatus) {
+        if (request.boughtStatus) {
             updatedProduct = product.markBought();
         } else {
             updatedProduct = product.markNotBought();
@@ -29,11 +29,11 @@ public class ChangeProductBoughtStatusUseCase implements UseCase<Product, Change
 
     public static class ChangeProductStatusRequest {
         public final long productId;
-        public final boolean boughStatus;
+        public final boolean boughtStatus;
 
-        public ChangeProductStatusRequest(long product, boolean boughStatus) {
+        public ChangeProductStatusRequest(long product, boolean boughtStatus) {
             this.productId = product;
-            this.boughStatus = boughStatus;
+            this.boughtStatus = boughtStatus;
         }
     }
 }

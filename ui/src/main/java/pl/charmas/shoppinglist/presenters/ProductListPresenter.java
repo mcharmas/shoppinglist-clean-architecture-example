@@ -62,7 +62,7 @@ public class ProductListPresenter implements UILifecycleObserver, ProductListUI.
     }
 
     private void presentError(Throwable throwable) {
-        // TODO: error handling
+        // TODO: error handling on UIs
     }
 
     @Override

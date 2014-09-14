@@ -9,8 +9,6 @@ public interface ProductListUI {
 
     void showProgress();
 
-    void hideProgress();
-
     void setUICallbacks(UICallbacks uiCallbacks);
 
     void navigateToAddNewProduct();

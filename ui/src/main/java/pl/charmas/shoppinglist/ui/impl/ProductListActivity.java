@@ -74,11 +74,6 @@ public class ProductListActivity extends BaseListActivity implements ProductList
     }
 
     @Override
-    public void hideProgress() {
-
-    }
-
-    @Override
     public void setUICallbacks(UICallbacks uiCallbacks) {
         this.uiCallbacks = uiCallbacks;
     }
