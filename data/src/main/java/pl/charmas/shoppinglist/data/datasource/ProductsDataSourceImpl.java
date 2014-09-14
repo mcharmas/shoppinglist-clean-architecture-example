@@ -34,7 +34,9 @@ public class ProductsDataSourceImpl implements ProductsDataSource {
 
     @Override
     public Product updateProduct(Product productToUpdate) {
-        return mapper.toProduct(productEntityStore.updateProductEntity(mapper.toEntity(productToUpdate)));
+        ProductEntity entity = mapper.toEntity(productToUpdate);
+        ProductEntity updatedEntity = productEntityStore.updateProductEntity(entity);
+        return mapper.toProduct(updatedEntity);
     }
 
     @Override

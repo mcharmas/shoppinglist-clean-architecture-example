@@ -12,7 +12,8 @@ public class RemoveAllBoughtProductsUseCase implements UseCaseArgumentless<Integ
     private final ProductsDataSource productsDataSource;
 
     @Inject
-    public RemoveAllBoughtProductsUseCase(RemoveProductUseCase removeProductUseCase, ProductsDataSource productsDataSource) {
+    public RemoveAllBoughtProductsUseCase(RemoveProductUseCase removeProductUseCase,
+                                          ProductsDataSource productsDataSource) {
         this.removeProductUseCase = removeProductUseCase;
         this.productsDataSource = productsDataSource;
     }

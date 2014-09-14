@@ -1,4 +1,4 @@
-package pl.charmas.shoppinglist.presenters;
+package pl.charmas.shoppinglist.controller;
 
 import javax.inject.Inject;
 
@@ -7,12 +7,12 @@ import pl.charmas.shoppinglist.domain.entities.Product;
 import pl.charmas.shoppinglist.domain.usecase.AddProductUseCase;
 import pl.charmas.shoppinglist.ui.AddProductUI;
 
-public class AddProductPresenter implements AddProductUI.UICallbacks, Presenter<AddProductUI> {
+public class AddProductController implements AddProductUI.UICallbacks, Controller<AddProductUI> {
     private final AddProductUseCase addProductUseCase;
     private AddProductUI ui;
 
     @Inject
-    public AddProductPresenter(AddProductUseCase addProductUseCase) {
+    public AddProductController(AddProductUseCase addProductUseCase) {
         this.addProductUseCase = addProductUseCase;
     }
 

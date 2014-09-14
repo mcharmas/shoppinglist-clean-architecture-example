@@ -13,15 +13,15 @@ import dagger.Module;
 import dagger.Provides;
 import pl.charmas.shoppinglist.app.AppModule;
 import pl.charmas.shoppinglist.base.BaseListActivity;
+import pl.charmas.shoppinglist.controller.Controller;
+import pl.charmas.shoppinglist.controller.ProductListController;
 import pl.charmas.shoppinglist.model.ProductViewModel;
-import pl.charmas.shoppinglist.presenters.Presenter;
-import pl.charmas.shoppinglist.presenters.ProductListPresenter;
 import pl.charmas.shoppinglist.ui.ProductListUI;
 
 public class ProductListActivity extends BaseListActivity implements ProductListUI {
 
     @Inject
-    Presenter<ProductListUI> presenter;
+    Controller<ProductListUI> controller;
 
     private OnProductStatusChangedListener onProductStatusChangedListener;
     private UICallbacks uiCallbacks;
@@ -29,8 +29,8 @@ public class ProductListActivity extends BaseListActivity implements ProductList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerUILifecycleObserver(presenter);
-        presenter.initialize(this);
+        registerUILifecycleObserver(controller);
+        controller.initialize(this);
         onProductStatusChangedListener = new OnProductStatusChangedListener();
     }
 
@@ -86,7 +86,7 @@ public class ProductListActivity extends BaseListActivity implements ProductList
     @Module(injects = {ProductListActivity.class}, addsTo = AppModule.class)
     static class ProductListActivityModule {
         @Provides
-        Presenter<ProductListUI> provideProductListPresenter(ProductListPresenter presenter) {
+        Controller<ProductListUI> provideProductListPresenter(ProductListController presenter) {
             return presenter;
         }
     }

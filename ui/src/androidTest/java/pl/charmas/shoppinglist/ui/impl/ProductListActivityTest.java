@@ -14,8 +14,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import pl.charmas.shoppinglist.base.TestActivityModules;
+import pl.charmas.shoppinglist.controller.Controller;
 import pl.charmas.shoppinglist.model.ProductViewModel;
-import pl.charmas.shoppinglist.presenters.Presenter;
 import pl.charmas.shoppinglist.ui.ProductListUI;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onData;
@@ -90,8 +90,8 @@ public class ProductListActivityTest extends ActivityInstrumentationTestCase2<Pr
         @SuppressWarnings("unchecked")
         @Provides
         @Singleton
-        Presenter<ProductListUI> provideTestPresenter() {
-            return Mockito.mock(Presenter.class);
+        Controller<ProductListUI> provideTestPresenter() {
+            return Mockito.mock(Controller.class);
         }
     }
 

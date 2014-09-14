@@ -12,22 +12,22 @@ import dagger.Module;
 import dagger.Provides;
 import pl.charmas.shoppinglist.app.AppModule;
 import pl.charmas.shoppinglist.base.BaseActivity;
-import pl.charmas.shoppinglist.presenters.AddProductPresenter;
-import pl.charmas.shoppinglist.presenters.Presenter;
+import pl.charmas.shoppinglist.controller.AddProductController;
+import pl.charmas.shoppinglist.controller.Controller;
 import pl.charmas.shoppinglist.ui.AddProductUI;
 
 public class AddProductActivity extends BaseActivity implements AddProductUI {
 
     @Inject
-    Presenter<AddProductUI> addProductPresenter;
+    Controller<AddProductUI> addProductController;
 
     private UICallbacks uiCallbacks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerUILifecycleObserver(addProductPresenter);
-        addProductPresenter.initialize(this);
+        registerUILifecycleObserver(addProductController);
+        addProductController.initialize(this);
         setContentView(R.layout.activity_add_product);
         final EditText productNameView = (EditText) findViewById(R.id.product_name_view);
         findViewById(R.id.product_add_button).setOnClickListener(new View.OnClickListener() {
@@ -56,7 +56,7 @@ public class AddProductActivity extends BaseActivity implements AddProductUI {
     @Module(injects = {AddProductActivity.class}, addsTo = AppModule.class)
     static class AddProductModule {
         @Provides
-        Presenter<AddProductUI> provideAddProductUI(AddProductPresenter presenter) {
+        Controller<AddProductUI> provideAddProductUI(AddProductController presenter) {
             return presenter;
         }
     }

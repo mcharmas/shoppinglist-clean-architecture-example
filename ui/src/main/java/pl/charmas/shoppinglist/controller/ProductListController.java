@@ -1,4 +1,4 @@
-package pl.charmas.shoppinglist.presenters;
+package pl.charmas.shoppinglist.controller;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import pl.charmas.shoppinglist.ui.ProductListUI;
 
 import static pl.charmas.shoppinglist.domain.usecase.ChangeProductBoughtStatusUseCase.ChangeProductStatusRequest;
 
-public class ProductListPresenter implements UILifecycleObserver, ProductListUI.UICallbacks, Presenter<ProductListUI> {
+public class ProductListController implements UILifecycleObserver, ProductListUI.UICallbacks, Controller<ProductListUI> {
     private final ProductToViewModelMapper mapper;
     private final ListProductsUseCase listProductsUseCase;
     private final RemoveAllBoughtProductsUseCase removeAllBoughtProductsUseCase;
@@ -23,7 +23,7 @@ public class ProductListPresenter implements UILifecycleObserver, ProductListUI.
     private ProductListUI ui;
 
     @Inject
-    public ProductListPresenter(ListProductsUseCase listProductsUseCase, ProductToViewModelMapper mapper, RemoveAllBoughtProductsUseCase removeAllBoughtProductsUseCase, ChangeProductBoughtStatusUseCase changeProductBoughtStatusUseCase) {
+    public ProductListController(ListProductsUseCase listProductsUseCase, ProductToViewModelMapper mapper, RemoveAllBoughtProductsUseCase removeAllBoughtProductsUseCase, ChangeProductBoughtStatusUseCase changeProductBoughtStatusUseCase) {
         this.listProductsUseCase = listProductsUseCase;
         this.mapper = mapper;
         this.removeAllBoughtProductsUseCase = removeAllBoughtProductsUseCase;
