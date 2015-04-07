@@ -1,21 +1,21 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion "20.0.0"
+    compileSdkVersion Integer.parseInt(project.PROJECT_TARGET)
+    buildToolsVersion project.PROJECT_TOOLS
 
     defaultConfig {
         applicationId "com.charmas.shoppinglist"
-        minSdkVersion 15
-        targetSdkVersion 20
+        minSdkVersion Integer.parseInt(project.PROJECT_MIN_SDK)
+        targetSdkVersion Integer.parseInt(project.PROJECT_TARGET)
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -29,18 +29,16 @@ android {
 }
 
 dependencies {
-    apt 'com.squareup.dagger:dagger-compiler:1.2.1'
-    compile 'com.netflix.rxjava:rxjava-core:0.19.+'
-    compile 'com.netflix.rxjava:rxjava-android:0.19.+'
+    provided 'com.squareup.dagger:dagger-compiler:1.2.1'
+    compile 'io.reactivex:rxjava:1.0.8'
+    compile 'io.reactivex:rxandroid:0.24.0'
     compile 'com.squareup.dagger:dagger:1.2.1'
-    compile 'com.android.support:support-v4:20.0.+'
+    compile 'com.android.support:support-v4:22.0.0'
 
     compile project(':domain')
     compile project(':data')
 
-    androidTestApt 'com.squareup.dagger:dagger-compiler:1.2.1'
+    androidTestProvided 'com.squareup.dagger:dagger-compiler:1.2.1'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.0'
-    androidTestCompile('com.jakewharton.espresso:espresso:1.1-r3') {
-        exclude group: 'com.squareup.dagger'
-    }
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.0'
 }
