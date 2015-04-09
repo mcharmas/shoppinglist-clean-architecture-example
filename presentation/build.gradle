@@ -1,0 +1,14 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+dependencies {
+  compile 'com.squareup.dagger:dagger-compiler:1.2.1'
+  compile 'com.squareup.dagger:dagger:1.2.1'
+  compile 'io.reactivex:rxjava:1.0.8'
+  compile project(':domain')
+
+  testCompile 'junit:junit:4.11'
+  testCompile 'org.mockito:mockito-all:1.9.5'
+}
