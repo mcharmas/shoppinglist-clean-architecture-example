@@ -11,13 +11,10 @@ public abstract class BasePresenter<T extends UI> implements Presenter<T> {
 
   @Override public void attachUI(T ui) {
     this.ui = ui;
+    executeCommandQueue(true);
     if (!this.uiAttachedBefore) {
       onFirstUIAttachment();
       this.uiAttachedBefore = true;
-    }
-    executeCommandQueue();
-    if (commandToRedeliver != null) {
-      commandToRedeliver.execute(ui);
     }
   }
 
@@ -29,18 +26,26 @@ public abstract class BasePresenter<T extends UI> implements Presenter<T> {
 
   protected void execute(UICommand<T> command, boolean redeliverOnAttachment) {
     commandQueue.add(command);
-    executeCommandQueue();
+    executeCommandQueue(false);
     if (redeliverOnAttachment) {
       commandToRedeliver = command;
     }
   }
 
-  private void executeCommandQueue() {
+  private void executeCommandQueue(boolean attachment) {
     if (this.ui != null) {
+      boolean commandToRedeliverExecuted = false;
       UICommand<T> command;
       while ((command = commandQueue.poll()) != null) {
         command.execute(this.ui);
+        if (command == commandToRedeliver) {
+          commandToRedeliverExecuted = true;
+        }
       }
+      if (attachment && !commandToRedeliverExecuted && commandToRedeliver != null) {
+        commandToRedeliver.execute(ui);
+      }
+
     }
   }
 

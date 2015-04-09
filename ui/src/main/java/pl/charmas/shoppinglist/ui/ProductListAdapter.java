@@ -42,6 +42,11 @@ public class ProductListAdapter extends ArrayAdapter<ProductViewModel> {
     return view;
   }
 
+  public void swapData(List<ProductViewModel> productViewModels) {
+    clear();
+    addAll(productViewModels);
+  }
+
   public interface OnProductStatusChangedListener {
     void onProductStatusChanged(long productId, boolean isBought);
   }

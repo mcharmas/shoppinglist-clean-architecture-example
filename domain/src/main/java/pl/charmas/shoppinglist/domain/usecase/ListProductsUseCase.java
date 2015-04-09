@@ -15,7 +15,7 @@ public class ListProductsUseCase implements UseCaseArgumentless<List<Product>> {
 
   @Override
   public List<Product> execute() throws Exception {
-    Thread.sleep(5000);
+    Thread.sleep(500);
     return productsDataSource.listAll();
   }
 }

@@ -28,7 +28,12 @@ public class ProductListActivity extends BasePresenterListActivity<ProductListPr
   }
 
   @Override public void showProductList(List<ProductViewModel> productViewModels) {
-    setListAdapter(new ProductListAdapter(this, productViewModels, onProductStatusChangedListener));
+    ProductListAdapter adapter = (ProductListAdapter) getListAdapter();
+    if (adapter != null) {
+      adapter.swapData(productViewModels);
+    } else {
+      setListAdapter(new ProductListAdapter(this, productViewModels, onProductStatusChangedListener));
+    }
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -59,6 +64,10 @@ public class ProductListActivity extends BasePresenterListActivity<ProductListPr
 
   @Override public void showProgress() {
     setListAdapter(null);
+  }
+
+  @Override public void navigateToAddProduct() {
+    //TODO: implement
   }
 
   @Override public void prepareAdditionalPresenterModules(List<Object> modules) {
