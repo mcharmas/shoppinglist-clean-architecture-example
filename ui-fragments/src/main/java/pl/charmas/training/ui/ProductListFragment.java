@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import dagger.Module;
 import java.util.List;
 import javax.inject.Inject;
@@ -27,6 +28,11 @@ public class ProductListFragment extends PresenterListFragment<ProductListPresen
         presenter.productStatusChanged(productId, isBought);
       }
     };
+  }
+
+  @Override public void onViewCreated(View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    setEmptyText("No products to buy...");
   }
 
   @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
