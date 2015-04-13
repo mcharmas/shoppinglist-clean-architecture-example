@@ -14,7 +14,7 @@ public class ProductListApp extends Application implements Injector {
   }
 
   private void initializeDagger() {
-    objectGraph = ObjectGraph.create(new AppModule());
+    objectGraph = ObjectGraph.create(new AppModule(this));
   }
 
   @Override public void inject(Object target) {
