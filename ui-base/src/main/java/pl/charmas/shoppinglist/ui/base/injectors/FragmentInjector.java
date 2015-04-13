@@ -6,12 +6,12 @@ import java.util.List;
 import pl.charmas.shoppinglist.ui.base.PresenterFragmentActivity;
 
 public class FragmentInjector implements Injector {
-  private final int id;
+  private final String id;
   private final PresenterFragmentActivity activity;
   private final ModuleFactory moduleFactory;
   private final Injector baseInjector;
 
-  public FragmentInjector(int id, PresenterFragmentActivity activity, ModuleFactory moduleFactory) {
+  public FragmentInjector(String id, PresenterFragmentActivity activity, ModuleFactory moduleFactory) {
     this.id = id;
     this.activity = activity;
     this.moduleFactory = moduleFactory;

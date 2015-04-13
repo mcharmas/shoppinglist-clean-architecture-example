@@ -15,6 +15,7 @@ public class ProductListFragment extends PresenterListFragment<ProductListPresen
     implements ProductListPresenter.ProductListUI {
 
   @Inject ProductListPresenter presenter;
+
   private ProductListAdapter.OnProductStatusChangedListener onProductStatusChangedListener;
 
   @Override public void onCreate(Bundle savedInstanceState) {
