@@ -68,12 +68,16 @@ public class ProductListFragment extends PresenterListFragment<ProductListPresen
   }
 
   @Override public void navigateToAddProduct() {
-    //TODO: navigate
+    ((ProductListFragmentActivity) getActivity()).navigateToAddProduct();
   }
 
   @Override public void preparePresenterModules(List<Object> modules) {
     super.preparePresenterModules(modules);
     modules.add(new PresentationModule());
+  }
+
+  public void onProductAdded() {
+    presenter.onProductAdded();
   }
 
   @Module(injects = {

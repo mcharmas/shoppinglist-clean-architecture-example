@@ -1,5 +1,7 @@
 package pl.charmas.training.ui;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +15,8 @@ import pl.charmas.shoppinglist.ui.base.PresenterListActivity;
 
 public class ProductListActivity extends PresenterListActivity<ProductListPresenter.ProductListUI>
     implements ProductListPresenter.ProductListUI {
+
+  private static final int REQUEST_ADD_PRODUCT = 0;
 
   @Inject ProductListPresenter presenter;
 
@@ -71,7 +75,14 @@ public class ProductListActivity extends PresenterListActivity<ProductListPresen
   }
 
   @Override public void navigateToAddProduct() {
-    //TODO: implement
+    startActivityForResult(new Intent(this, AddProductActivity.class), REQUEST_ADD_PRODUCT);
+  }
+
+  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == REQUEST_ADD_PRODUCT && resultCode == Activity.RESULT_OK) {
+      presenter.onProductAdded();
+    }
   }
 
   @Override public void preparePresenterModules(List<Object> modules) {

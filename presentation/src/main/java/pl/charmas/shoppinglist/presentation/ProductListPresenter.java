@@ -74,6 +74,10 @@ public class ProductListPresenter extends BasePresenter<ProductListPresenter.Pro
     });
   }
 
+  public void onProductAdded() {
+    updateProductList(true);
+  }
+
   public interface ProductListUI extends UI {
     void showProductList(List<ProductViewModel> productViewModels);
 
