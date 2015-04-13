@@ -5,12 +5,13 @@ import android.support.v4.app.FragmentActivity;
 import java.util.List;
 import javax.inject.Inject;
 import pl.charmas.shoppinglist.base.injectors.ActivityInjector;
+import pl.charmas.shoppinglist.base.injectors.Injector;
 import pl.charmas.shoppinglist.base.injectors.ModuleFactory;
 import pl.charmas.shoppinglist.presentation.base.LifecycleNotifier;
 import pl.charmas.shoppinglist.presentation.base.Presenter;
 import pl.charmas.shoppinglist.presentation.base.UI;
 
-public abstract class BasePresenterActivity<T extends UI> extends FragmentActivity implements ModuleFactory {
+public abstract class PresenterActivity<T extends UI> extends FragmentActivity implements ModuleFactory {
   @Inject LifecycleNotifier lifecycleNotifier;
   private Presenter<T> presenter;
   private T ui;
@@ -18,15 +19,19 @@ public abstract class BasePresenterActivity<T extends UI> extends FragmentActivi
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    activityInjector = new ActivityInjector(this, getLastCustomNonConfigurationInstance(), this);
-    activityInjector.performInjection(this);
+    activityInjector = new ActivityInjector(getLastCustomNonConfigurationInstance(), this, getBaseInjector());
+    activityInjector.inject(this);
+  }
+
+  protected Injector getBaseInjector() {
+    return (Injector) getApplication();
   }
 
   public void prepareInstanceModules(List<Object> modules) {
   }
 
   public void preparePresenterModules(List<Object> modules) {
-    modules.add(new BasePresenterModule());
+    modules.add(new PresenterModule());
   }
 
   @Override public Object onRetainCustomNonConfigurationInstance() {

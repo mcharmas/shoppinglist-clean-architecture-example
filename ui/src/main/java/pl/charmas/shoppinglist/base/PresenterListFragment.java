@@ -10,7 +10,7 @@ import pl.charmas.shoppinglist.base.injectors.ModuleFactory;
 import pl.charmas.shoppinglist.presentation.base.Presenter;
 import pl.charmas.shoppinglist.presentation.base.UI;
 
-public class BasePresenterListFragment<T extends UI> extends ListFragment implements ModuleFactory {
+public class PresenterListFragment<T extends UI> extends ListFragment implements ModuleFactory {
   private Presenter<T> presenter;
   private T ui;
   private FragmentInjector fragmentInjector;
@@ -18,7 +18,7 @@ public class BasePresenterListFragment<T extends UI> extends ListFragment implem
   @Override public void onAttach(Activity activity) {
     super.onAttach(activity);
     try {
-      BasePresenterFragmentActivity presenterActivity = (BasePresenterFragmentActivity) activity;
+      PresenterFragmentActivity presenterActivity = (PresenterFragmentActivity) activity;
       fragmentInjector = new FragmentInjector(getId(), presenterActivity, this);
       fragmentInjector.inject(this);
     } catch (ClassCastException ex) {

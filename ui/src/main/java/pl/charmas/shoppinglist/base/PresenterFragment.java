@@ -6,7 +6,7 @@ import android.view.View;
 import pl.charmas.shoppinglist.presentation.base.Presenter;
 import pl.charmas.shoppinglist.presentation.base.UI;
 
-public class BasePresenterFragment<T extends UI> extends Fragment {
+public class PresenterFragment<T extends UI> extends Fragment {
   private Presenter<T> presenter;
   private T ui;
 

@@ -4,8 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.SparseArray;
 import dagger.ObjectGraph;
+import pl.charmas.shoppinglist.base.injectors.Injector;
 
-public class BasePresenterFragmentActivity extends FragmentActivity {
+public class PresenterFragmentActivity extends FragmentActivity {
   private SparseArray<ObjectGraph> fragmentPresenterGraphs;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
@@ -31,5 +32,9 @@ public class BasePresenterFragmentActivity extends FragmentActivity {
 
   public void setPresenterGraphForFragment(int id, ObjectGraph presenterGraph) {
     fragmentPresenterGraphs.append(id, presenterGraph);
+  }
+
+  public Injector getBaseInjector() {
+    return (Injector) getApplication();
   }
 }

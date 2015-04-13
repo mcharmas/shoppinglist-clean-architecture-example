@@ -1,4 +1,4 @@
-package pl.charmas.shoppinglist.async;
+package pl.charmas.shoppinglist.base.async;
 
 import javax.inject.Inject;
 import pl.charmas.shoppinglist.domain.usecase.UseCase;

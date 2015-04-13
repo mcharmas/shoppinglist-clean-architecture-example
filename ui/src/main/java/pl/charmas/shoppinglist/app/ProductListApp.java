@@ -1,16 +1,11 @@
 package pl.charmas.shoppinglist.app;
 
 import android.app.Application;
-import android.content.Context;
 import dagger.ObjectGraph;
+import pl.charmas.shoppinglist.base.injectors.Injector;
 
-public class ProductListApp extends Application {
-
+public class ProductListApp extends Application implements Injector {
   private ObjectGraph objectGraph;
-
-  public static ProductListApp get(Context context) {
-    return (ProductListApp) context.getApplicationContext();
-  }
 
   @Override
   public void onCreate() {
@@ -22,11 +17,11 @@ public class ProductListApp extends Application {
     objectGraph = ObjectGraph.create(new AppModule());
   }
 
-  public void inject(Object target) {
+  @Override public void inject(Object target) {
     objectGraph.inject(target);
   }
 
-  public ObjectGraph graph() {
+  @Override public ObjectGraph getObjectGraph() {
     return objectGraph;
   }
 }

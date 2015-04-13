@@ -7,12 +7,12 @@ import android.view.Window;
 import dagger.Module;
 import java.util.List;
 import javax.inject.Inject;
-import pl.charmas.shoppinglist.base.BasePresenterListActivity;
+import pl.charmas.shoppinglist.base.PresenterListActivity;
 import pl.charmas.shoppinglist.presentation.ProductListPresenter;
 import pl.charmas.shoppinglist.presentation.model.ProductViewModel;
 import pl.charmas.shoppinglist.ui.ProductListAdapter;
 
-public class ProductListActivity extends BasePresenterListActivity<ProductListPresenter.ProductListUI>
+public class ProductListActivity extends PresenterListActivity<ProductListPresenter.ProductListUI>
     implements ProductListPresenter.ProductListUI {
 
   @Inject ProductListPresenter presenter;

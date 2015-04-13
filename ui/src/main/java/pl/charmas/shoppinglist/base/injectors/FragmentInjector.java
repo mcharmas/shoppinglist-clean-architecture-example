@@ -3,38 +3,42 @@ package pl.charmas.shoppinglist.base.injectors;
 import dagger.ObjectGraph;
 import java.util.ArrayList;
 import java.util.List;
-import pl.charmas.shoppinglist.app.ProductListApp;
-import pl.charmas.shoppinglist.base.BasePresenterFragmentActivity;
+import pl.charmas.shoppinglist.base.PresenterFragmentActivity;
 
-public class FragmentInjector {
+public class FragmentInjector implements Injector {
   private final int id;
-  private final BasePresenterFragmentActivity activity;
+  private final PresenterFragmentActivity activity;
   private final ModuleFactory moduleFactory;
+  private final Injector baseInjector;
 
-  public FragmentInjector(int id, BasePresenterFragmentActivity activity, ModuleFactory moduleFactory) {
+  public FragmentInjector(int id, PresenterFragmentActivity activity, ModuleFactory moduleFactory) {
     this.id = id;
     this.activity = activity;
     this.moduleFactory = moduleFactory;
+    this.baseInjector = activity.getBaseInjector();
   }
 
   public void inject(Object target) {
-    ObjectGraph appGraph = ProductListApp.get(activity).graph();
+    getObjectGraph().inject(target);
+  }
+
+  @Override public ObjectGraph getObjectGraph() {
+    ObjectGraph baseGraph = baseInjector.getObjectGraph();
     ObjectGraph presenterGraph = activity.getPresenterGraphForFragment(id);
     if (presenterGraph == null) {
       Object[] presenterModules = getPresenterModules();
       if (presenterModules.length != 0) {
-        presenterGraph = appGraph.plus(presenterModules);
+        presenterGraph = baseGraph.plus(presenterModules);
         activity.setPresenterGraphForFragment(id, presenterGraph);
       }
     }
 
-    ObjectGraph injectionGraph = presenterGraph == null ? appGraph : presenterGraph;
+    ObjectGraph injectionGraph = presenterGraph == null ? baseGraph : presenterGraph;
     Object[] activityModules = getInstanceModules();
     if (activityModules.length != 0) {
       injectionGraph = injectionGraph.plus(activityModules);
     }
-
-    injectionGraph.inject(target);
+    return injectionGraph;
   }
 
   private Object[] getInstanceModules() {
