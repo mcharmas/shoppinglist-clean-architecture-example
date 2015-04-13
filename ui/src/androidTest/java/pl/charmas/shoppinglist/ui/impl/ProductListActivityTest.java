@@ -14,7 +14,7 @@ import org.mockito.MockitoAnnotations;
 import pl.charmas.shoppinglist.base.TestActivityModules;
 import pl.charmas.shoppinglist.presentation.ProductListPresenter;
 import pl.charmas.shoppinglist.presentation.model.ProductViewModel;
-import pl.charmas.shoppinglist.ui.ProductListActivity;
+import pl.charmas.shoppinglist.ui.activity.ProductListActivity;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;

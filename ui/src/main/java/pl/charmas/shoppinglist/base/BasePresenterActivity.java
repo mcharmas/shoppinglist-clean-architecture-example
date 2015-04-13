@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import java.util.List;
 import javax.inject.Inject;
+import pl.charmas.shoppinglist.base.injectors.ActivityInjector;
+import pl.charmas.shoppinglist.base.injectors.ModuleFactory;
 import pl.charmas.shoppinglist.presentation.base.LifecycleNotifier;
 import pl.charmas.shoppinglist.presentation.base.Presenter;
 import pl.charmas.shoppinglist.presentation.base.UI;
 
-public abstract class BasePresenterActivity<T extends UI> extends FragmentActivity implements ActivityInjector.ModuleFactory {
+public abstract class BasePresenterActivity<T extends UI> extends FragmentActivity implements ModuleFactory {
   @Inject LifecycleNotifier lifecycleNotifier;
   private Presenter<T> presenter;
   private T ui;
@@ -20,10 +22,10 @@ public abstract class BasePresenterActivity<T extends UI> extends FragmentActivi
     activityInjector.performInjection(this);
   }
 
-  public void prepareAdditionalActivityModules(List<Object> modules) {
+  public void prepareInstanceModules(List<Object> modules) {
   }
 
-  public void prepareAdditionalPresenterModules(List<Object> modules) {
+  public void preparePresenterModules(List<Object> modules) {
     modules.add(new BasePresenterModule());
   }
 

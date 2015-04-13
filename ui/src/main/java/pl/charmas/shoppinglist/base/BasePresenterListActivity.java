@@ -4,11 +4,13 @@ import android.app.ListActivity;
 import android.os.Bundle;
 import java.util.List;
 import javax.inject.Inject;
+import pl.charmas.shoppinglist.base.injectors.ActivityInjector;
+import pl.charmas.shoppinglist.base.injectors.ModuleFactory;
 import pl.charmas.shoppinglist.presentation.base.LifecycleNotifier;
 import pl.charmas.shoppinglist.presentation.base.Presenter;
 import pl.charmas.shoppinglist.presentation.base.UI;
 
-public class BasePresenterListActivity<T extends UI> extends ListActivity implements ActivityInjector.ModuleFactory {
+public class BasePresenterListActivity<T extends UI> extends ListActivity implements ModuleFactory {
   @Inject LifecycleNotifier lifecycleNotifier;
   private Presenter<T> presenter;
   private T ui;
@@ -20,14 +22,14 @@ public class BasePresenterListActivity<T extends UI> extends ListActivity implem
     activityInjector.performInjection(this);
   }
 
-  public void prepareAdditionalActivityModules(List<Object> modules) {
+  public void prepareInstanceModules(List<Object> modules) {
   }
 
-  public void prepareAdditionalPresenterModules(List<Object> modules) {
+  public void preparePresenterModules(List<Object> modules) {
     modules.add(new BasePresenterModule());
   }
 
-  @Override public Object onRetainNonConfigurationInstance() {
+  @SuppressWarnings("deprecation") @Override public Object onRetainNonConfigurationInstance() {
     return activityInjector.getNonConfigurationInstance();
   }
 

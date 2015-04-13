@@ -1,10 +1,11 @@
-package pl.charmas.shoppinglist.base;
+package pl.charmas.shoppinglist.base.injectors;
 
 import android.content.Context;
 import dagger.ObjectGraph;
 import java.util.ArrayList;
 import java.util.List;
 import pl.charmas.shoppinglist.app.ProductListApp;
+import pl.charmas.shoppinglist.base.TestActivityModules;
 
 public class ActivityInjector {
   private final Context context;
@@ -29,7 +30,7 @@ public class ActivityInjector {
     }
 
     ObjectGraph injectionGraph = presenterGraph == null ? appGraph : presenterGraph;
-    Object[] activityModules = getActivityModules();
+    Object[] activityModules = getInstanceModules();
     if (activityModules.length != 0) {
       injectionGraph = injectionGraph.plus(activityModules);
     }
@@ -41,21 +42,15 @@ public class ActivityInjector {
     return presenterGraph;
   }
 
-  private Object[] getActivityModules() {
+  private Object[] getInstanceModules() {
     List<Object> modules = new ArrayList<>();
-    moduleFactory.prepareAdditionalActivityModules(modules);
+    moduleFactory.prepareInstanceModules(modules);
     return modules.toArray(new Object[modules.size()]);
   }
 
   private Object[] getPresenterModules() {
     List<Object> modules = new ArrayList<>();
-    moduleFactory.prepareAdditionalPresenterModules(modules);
+    moduleFactory.preparePresenterModules(modules);
     return modules.toArray(new Object[modules.size()]);
-  }
-
-  public interface ModuleFactory {
-    void prepareAdditionalActivityModules(List<Object> modules);
-
-    void prepareAdditionalPresenterModules(List<Object> modules);
   }
 }

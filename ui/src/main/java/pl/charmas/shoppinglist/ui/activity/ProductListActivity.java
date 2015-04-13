@@ -1,14 +1,16 @@
-package pl.charmas.shoppinglist.ui;
+package pl.charmas.shoppinglist.ui.activity;
 
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import dagger.Module;
 import java.util.List;
 import javax.inject.Inject;
 import pl.charmas.shoppinglist.base.BasePresenterListActivity;
 import pl.charmas.shoppinglist.presentation.ProductListPresenter;
 import pl.charmas.shoppinglist.presentation.model.ProductViewModel;
+import pl.charmas.shoppinglist.ui.ProductListAdapter;
 
 public class ProductListActivity extends BasePresenterListActivity<ProductListPresenter.ProductListUI>
     implements ProductListPresenter.ProductListUI {
@@ -19,6 +21,7 @@ public class ProductListActivity extends BasePresenterListActivity<ProductListPr
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
     setupPresenter(presenter, this);
     onProductStatusChangedListener = new ProductListAdapter.OnProductStatusChangedListener() {
       @Override public void onProductStatusChanged(long productId, boolean isBought) {
@@ -28,6 +31,7 @@ public class ProductListActivity extends BasePresenterListActivity<ProductListPr
   }
 
   @Override public void showProductList(List<ProductViewModel> productViewModels) {
+    setProgressBarIndeterminateVisibility(false);
     ProductListAdapter adapter = (ProductListAdapter) getListAdapter();
     if (adapter != null) {
       adapter.swapData(productViewModels);
@@ -64,20 +68,21 @@ public class ProductListActivity extends BasePresenterListActivity<ProductListPr
 
   @Override public void showProgress() {
     setListAdapter(null);
+    setProgressBarIndeterminateVisibility(true);
   }
 
   @Override public void navigateToAddProduct() {
     //TODO: implement
   }
 
-  @Override public void prepareAdditionalPresenterModules(List<Object> modules) {
-    super.prepareAdditionalPresenterModules(modules);
+  @Override public void preparePresenterModules(List<Object> modules) {
+    super.preparePresenterModules(modules);
     modules.add(new PresentationModule());
   }
 
   @Module(injects = {
       ProductListPresenter.class,
       ProductListActivity.class
-  }, complete = false) public class PresentationModule {
+  }, complete = false) public static class PresentationModule {
   }
 }
