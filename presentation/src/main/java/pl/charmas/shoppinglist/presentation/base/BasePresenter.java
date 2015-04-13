@@ -18,7 +18,8 @@ public abstract class BasePresenter<T extends UI> implements Presenter<T> {
     }
   }
 
-  protected abstract void onFirstUIAttachment();
+  protected void onFirstUIAttachment() {
+  }
 
   @Override public void detachUI() {
     this.ui = null;
@@ -45,7 +46,6 @@ public abstract class BasePresenter<T extends UI> implements Presenter<T> {
       if (attachment && !commandToRedeliverExecuted && commandToRedeliver != null) {
         commandToRedeliver.execute(ui);
       }
-
     }
   }
 
