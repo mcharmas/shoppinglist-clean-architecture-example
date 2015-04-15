@@ -15,14 +15,11 @@ public class ChangeProductBoughtStatusUseCase implements UseCase<Product, Change
   @Override
   public Product execute(final ChangeProductStatusRequest request) {
     Product currentProduct = productsDataSource.getProduct(request.productId);
-    Product product = new Product(
-        currentProduct.getId(), currentProduct.getName(), currentProduct.isBought()
-    );
     Product updatedProduct;
     if (request.boughtStatus) {
-      updatedProduct = product.markBought();
+      updatedProduct = currentProduct.markBought();
     } else {
-      updatedProduct = product.markNotBought();
+      updatedProduct = currentProduct.markNotBought();
     }
     return productsDataSource.updateProduct(updatedProduct);
   }

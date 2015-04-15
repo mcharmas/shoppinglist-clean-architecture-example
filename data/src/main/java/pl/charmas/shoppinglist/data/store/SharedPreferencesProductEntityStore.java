@@ -3,7 +3,6 @@ package pl.charmas.shoppinglist.data.store;
 import android.content.SharedPreferences;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import javax.inject.Inject;
 import org.json.JSONArray;
@@ -24,64 +23,12 @@ public class SharedPreferencesProductEntityStore implements ProductEntityStore {
     this.entityJsonMapper = entityJsonMapper;
   }
 
-  @Override public ProductEntity createProductEntity(String name, boolean isBought) {
-    ProductEntity entity = new ProductEntity(getNextId(), name, isBought);
-    List<ProductEntity> entities = listAll();
-    entities.add(entity);
-    updateAll(entities);
-    return entity;
-  }
-
-  private void updateAll(List<ProductEntity> entities) {
-    try {
-      sharedPreferences.edit().putString(SP_PRODUCT_ENTITIES, entityJsonMapper.toJson(entities)).apply();
-    } catch (JSONException e) {
-      handleJSONError(e);
-    }
-  }
-
   private void handleJSONError(JSONException e) {
     sharedPreferences.edit().remove(SP_PRODUCT_ENTITIES).apply();
     throw new RuntimeException("Error reading entities. Clearing database.", e);
   }
 
-  private long getNextId() {
-    int id = sharedPreferences.getInt(SP_CURRENT_ID, 0);
-    sharedPreferences.edit().putInt(SP_CURRENT_ID, id + 1).apply();
-    return id;
-  }
-
-  @Override public int removeProductEntity(long id) {
-    List<ProductEntity> productEntities = listAll();
-    Iterator<ProductEntity> iterator = productEntities.iterator();
-    int removeCounter = 0;
-    while (iterator.hasNext()) {
-      if (iterator.next().getId() == id) {
-        iterator.remove();
-        removeCounter++;
-      }
-    }
-    updateAll(productEntities);
-    return removeCounter;
-  }
-
-  @Override public ProductEntity updateProductEntity(ProductEntity productToUpdate) {
-    List<ProductEntity> entities = listAll();
-    int location = -1;
-    for (int i = 0; i < entities.size(); i++) {
-      if (entities.get(i).getId() == productToUpdate.getId()) {
-        location = i;
-        break;
-      }
-    }
-    if (location != -1) {
-      entities.set(location, productToUpdate);
-      updateAll(entities);
-    }
-    return productToUpdate;
-  }
-
-  @Override public List<ProductEntity> listAll() {
+  @Override public List<ProductEntity> getAllProduct() {
     try {
       return entityJsonMapper.fromJson(sharedPreferences.getString(SP_PRODUCT_ENTITIES, "[]"));
     } catch (JSONException e) {
@@ -90,13 +37,18 @@ public class SharedPreferencesProductEntityStore implements ProductEntityStore {
     }
   }
 
-  @Override public ProductEntity getProduct(long id) {
-    for (ProductEntity entity : listAll()) {
-      if (entity.getId() == id) {
-        return entity;
-      }
+  @Override public void storeAllProducts(List<ProductEntity> entities) {
+    try {
+      sharedPreferences.edit().putString(SP_PRODUCT_ENTITIES, entityJsonMapper.toJson(entities)).apply();
+    } catch (JSONException e) {
+      handleJSONError(e);
     }
-    return null;
+  }
+
+  @Override public long getCreateNextId() {
+    int id = sharedPreferences.getInt(SP_CURRENT_ID, 0);
+    sharedPreferences.edit().putInt(SP_CURRENT_ID, id + 1).apply();
+    return id;
   }
 
   public static class EntityJsonMapper {

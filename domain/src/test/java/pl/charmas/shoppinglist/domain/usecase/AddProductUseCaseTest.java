@@ -12,18 +12,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 public class AddProductUseCaseTest {
-  @Mock
-  ProductsDataSource productsDataSourceMock;
+  @Mock ProductsDataSource productsDataSourceMock;
+
   private AddProductUseCase useCase;
 
-  @Before
-  public void setUp() throws Exception {
+  @Before public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     useCase = new AddProductUseCase(productsDataSourceMock);
   }
 
-  @Test
-  public void testShouldAddProduct() throws Exception {
+  @Test public void testShouldAddProduct() throws Exception {
     useCase.execute("Sample product");
 
     verify(productsDataSourceMock).createProduct(eq("Sample product"), eq(false));
