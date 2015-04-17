@@ -1,6 +1,6 @@
 package pl.charmas.shoppinglist.data.datasource;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +17,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @SuppressWarnings("unchecked") public class ProductsDataSourceImplTest {
-
   @Mock ProductEntityStore store;
   ProductsDataSourceImpl dataSource;
 
@@ -28,11 +27,14 @@ import static org.mockito.Mockito.verify;
 
   @Test
   public void testShouldMapProductListAndStoreIt() throws Exception {
-    dataSource.saveProductList(new ProductList(Collections.singletonList(new Product(0, "test", true))));
+    dataSource.saveProductList(new ProductList(Arrays.asList(
+        new Product(0, "test", true),
+        new Product(1, "test", true)
+    )));
 
     ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
     verify(store, times(1)).storeAllProducts(captor.capture());
 
-    assertEquals(captor.getValue().size(), 1);
+    assertEquals(captor.getValue().size(), 2);
   }
 }

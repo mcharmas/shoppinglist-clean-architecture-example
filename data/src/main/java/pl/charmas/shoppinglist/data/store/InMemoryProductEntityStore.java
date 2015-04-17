@@ -10,13 +10,12 @@ import pl.charmas.shoppinglist.data.entity.ProductEntity;
 @Singleton
 public class InMemoryProductEntityStore implements ProductEntityStore {
   private List<ProductEntity> entities = Collections.emptyList();
-  private long currentId = 0;
 
   @Inject
   public InMemoryProductEntityStore() {
     List<ProductEntity> entities = new ArrayList<>();
     for (int i = 0; i < 20; i++) {
-      entities.add(new ProductEntity(getCreateNextId(), "Product " + i, false));
+      entities.add(new ProductEntity(i, "Product " + i, false));
     }
     storeAllProducts(entities);
   }
@@ -27,9 +26,5 @@ public class InMemoryProductEntityStore implements ProductEntityStore {
 
   @Override public void storeAllProducts(List<ProductEntity> entities) {
     this.entities = entities;
-  }
-
-  @Override public long getCreateNextId() {
-    return ++currentId;
   }
 }

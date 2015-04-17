@@ -36,12 +36,6 @@ public class SharedPreferencesProductEntityStoreTest extends AndroidTestCase {
     assertEquals(1, products.get(1).getId());
   }
 
-  public void testShouldIncrementId() throws Exception {
-    assertEquals(0, store.getCreateNextId());
-    assertEquals(1, store.getCreateNextId());
-    assertEquals(2, store.getCreateNextId());
-  }
-
   private SharedPreferences getAndClearSharedPreferences() {
     SharedPreferences sharedPreferences = PreferenceManager
         .getDefaultSharedPreferences(getContext());

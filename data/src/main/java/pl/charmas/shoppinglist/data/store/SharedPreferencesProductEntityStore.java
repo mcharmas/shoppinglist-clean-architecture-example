@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import pl.charmas.shoppinglist.data.entity.ProductEntity;
 
 public class SharedPreferencesProductEntityStore implements ProductEntityStore {
-  private static final String SP_CURRENT_ID = "CURRENT_ID";
   private static final String SP_PRODUCT_ENTITIES = "PRODUCT_ENTITIES";
   private final SharedPreferences sharedPreferences;
   private final EntityJsonMapper entityJsonMapper;
@@ -43,12 +42,6 @@ public class SharedPreferencesProductEntityStore implements ProductEntityStore {
     } catch (JSONException e) {
       handleJSONError(e);
     }
-  }
-
-  @Override public long getCreateNextId() {
-    int id = sharedPreferences.getInt(SP_CURRENT_ID, 0);
-    sharedPreferences.edit().putInt(SP_CURRENT_ID, id + 1).apply();
-    return id;
   }
 
   public static class EntityJsonMapper {

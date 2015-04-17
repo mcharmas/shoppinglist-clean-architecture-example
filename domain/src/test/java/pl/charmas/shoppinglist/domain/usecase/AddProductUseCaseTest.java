@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 public class AddProductUseCaseTest {
   private static final String PRODUCT_NAME = "Sample product";
   @Mock ProductsDataSource productsDataSourceMock;
-  @Mock ProductList products;
+  @Mock ProductList mockProducts;
 
   private AddProductUseCase useCase;
 
@@ -26,12 +26,12 @@ public class AddProductUseCaseTest {
   }
 
   @Test public void testShouldAddProduct() throws Exception {
-    when(productsDataSourceMock.getProductList()).thenReturn(products);
+    when(productsDataSourceMock.getProductList()).thenReturn(mockProducts);
 
     useCase.execute(PRODUCT_NAME);
 
-    verify(products, times(1)).addProduct(PRODUCT_NAME);
-    verify(productsDataSourceMock).saveProductList(products);
+    verify(mockProducts, times(1)).addProduct(PRODUCT_NAME);
+    verify(productsDataSourceMock).saveProductList(mockProducts);
   }
 
   @Test

@@ -7,6 +7,4 @@ public interface ProductEntityStore {
   List<ProductEntity> getAllProduct();
 
   void storeAllProducts(List<ProductEntity> entities);
-
-  long getCreateNextId();
 }
