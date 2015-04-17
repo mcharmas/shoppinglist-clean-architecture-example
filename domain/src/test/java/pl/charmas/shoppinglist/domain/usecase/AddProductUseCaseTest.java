@@ -8,12 +8,15 @@ import org.mockito.MockitoAnnotations;
 import pl.charmas.shoppinglist.domain.datasource.ProductsDataSource;
 import pl.charmas.shoppinglist.domain.entities.ProductList;
 
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 public class AddProductUseCaseTest {
+  private static final String PRODUCT_NAME = "Sample product";
   @Mock ProductsDataSource productsDataSourceMock;
+  @Mock ProductList products;
 
   private AddProductUseCase useCase;
 
@@ -23,12 +26,12 @@ public class AddProductUseCaseTest {
   }
 
   @Test public void testShouldAddProduct() throws Exception {
-    ProductList productList = new ProductList(null);
-    when(productsDataSourceMock.getProductList()).thenReturn(productList);
+    when(productsDataSourceMock.getProductList()).thenReturn(products);
 
-    useCase.execute("Sample product");
+    useCase.execute(PRODUCT_NAME);
 
-    verify(productsDataSourceMock).saveProductList(productList);
+    verify(products, times(1)).addProduct(PRODUCT_NAME);
+    verify(productsDataSourceMock).saveProductList(products);
   }
 
   @Test

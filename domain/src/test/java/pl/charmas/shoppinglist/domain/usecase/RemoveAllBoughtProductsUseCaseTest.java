@@ -12,10 +12,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class RemoveAllBoughtProductsUseCaseTest {
-
   @Mock ProductsDataSource productsDataSource;
-
   @Mock ProductList mockProducts;
+
   private RemoveAllBoughtProductsUseCase useCase;
 
   @Before
