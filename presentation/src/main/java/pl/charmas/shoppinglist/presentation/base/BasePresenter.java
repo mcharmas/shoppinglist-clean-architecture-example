@@ -33,6 +33,14 @@ public abstract class BasePresenter<T extends UI> implements Presenter<T> {
     }
   }
 
+  protected void executeOnce(UICommand<T> command) {
+    execute(command, false);
+  }
+
+  protected void executeRepeat(UICommand<T> command) {
+    execute(command, true);
+  }
+
   private void executeCommandQueue(boolean attachment) {
     if (this.ui != null) {
       boolean commandToRedeliverExecuted = false;

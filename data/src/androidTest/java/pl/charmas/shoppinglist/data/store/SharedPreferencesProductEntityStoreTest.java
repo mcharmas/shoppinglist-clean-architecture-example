@@ -3,21 +3,20 @@ package pl.charmas.shoppinglist.data.store;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
-import android.test.IsolatedContext;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import pl.charmas.shoppinglist.data.entity.ProductEntity;
 
 public class SharedPreferencesProductEntityStoreTest extends AndroidTestCase {
-
   private SharedPreferencesProductEntityStore store;
 
   @Override public void setUp() throws Exception {
     super.setUp();
-    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(new IsolatedContext(null, getContext()));
-    sp.edit().clear().apply();
-    store = new SharedPreferencesProductEntityStore(sp, new SharedPreferencesProductEntityStore.EntityJsonMapper());
-    assertEquals(0, store.getAllProduct().size());
+    store = new SharedPreferencesProductEntityStore(
+        getAndClearSharedPreferences(),
+        new SharedPreferencesProductEntityStore.EntityJsonMapper()
+    );
   }
 
   public void testShouldStoreEmptyList() throws Exception {
@@ -31,12 +30,22 @@ public class SharedPreferencesProductEntityStoreTest extends AndroidTestCase {
         new ProductEntity(1, "sample", false)
     ));
 
-    assertEquals(2, store.getAllProduct().size());
+    List<ProductEntity> products = store.getAllProduct();
+    assertEquals(2, products.size());
+    assertEquals(0, products.get(0).getId());
+    assertEquals(1, products.get(1).getId());
   }
 
   public void testShouldIncrementId() throws Exception {
     assertEquals(0, store.getCreateNextId());
     assertEquals(1, store.getCreateNextId());
     assertEquals(2, store.getCreateNextId());
+  }
+
+  private SharedPreferences getAndClearSharedPreferences() {
+    SharedPreferences sharedPreferences = PreferenceManager
+        .getDefaultSharedPreferences(getContext());
+    sharedPreferences.edit().clear().apply();
+    return sharedPreferences;
   }
 }

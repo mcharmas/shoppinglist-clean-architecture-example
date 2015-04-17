@@ -14,7 +14,9 @@ import pl.charmas.shoppinglist.presentation.AddProductPresenter.AddProductUI;
 import pl.charmas.shoppinglist.presentation.ProductListPresenter;
 import pl.charmas.shoppinglist.ui.base.PresenterFragment;
 
-public class AddProductFragment extends PresenterFragment<AddProductUI> implements AddProductUI {
+public class AddProductFragment
+    extends PresenterFragment<AddProductUI>
+    implements AddProductUI {
 
   @Inject AddProductPresenter presenter;
 
@@ -25,18 +27,20 @@ public class AddProductFragment extends PresenterFragment<AddProductUI> implemen
     setupPresenter(presenter, this);
   }
 
-  @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+  @Override public View onCreateView(LayoutInflater inflater,
+      ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(R.layout.fragment_add_product, container, false);
   }
 
   @Override public void onViewCreated(View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     productNameView = (EditText) view.findViewById(R.id.product_name_view);
-    view.findViewById(R.id.product_add_button).setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View v) {
-        presenter.onProductNameComplete(productNameView.getText().toString());
-      }
-    });
+    view.findViewById(R.id.product_add_button)
+        .setOnClickListener(new View.OnClickListener() {
+          @Override public void onClick(View v) {
+            presenter.onProductNameComplete(productNameView.getText().toString());
+          }
+        });
   }
 
   @Override public void navigateBack() {
