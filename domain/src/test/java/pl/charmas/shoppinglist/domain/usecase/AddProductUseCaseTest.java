@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.charmas.shoppinglist.domain.datasource.ProductsDataSource;
 import pl.charmas.shoppinglist.domain.entities.ProductList;
+import pl.charmas.shoppinglist.domain.usecase.exceptions.ValidationException;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -41,11 +42,11 @@ public class AddProductUseCaseTest {
     assertFailsWithIllegalArgumentException("   ");
   }
 
-  private void assertFailsWithIllegalArgumentException(String productName) {
+  private void assertFailsWithIllegalArgumentException(String productName) throws Exception {
     try {
       useCase.execute(productName);
       Assert.fail();
-    } catch (IllegalArgumentException ex) {
+    } catch (ValidationException ex) {
       verifyZeroInteractions(productsDataSourceMock);
     }
   }
