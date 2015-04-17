@@ -6,7 +6,8 @@ import static org.junit.Assert.assertEquals;
 
 public class ProductTest {
   @Test public void testShouldBeBoughtWhenMarkedAsBought() throws Exception {
-    Product boughtProduct = new Product(0, "sample name", false).markBought();
-    assertEquals(true, boughtProduct.isBought());
+    Product product = new Product(0, "sample name", false);
+    product.markBought();
+    assertEquals(true, product.isBought());
   }
 }

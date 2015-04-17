@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import pl.charmas.shoppinglist.domain.entities.Product;
+import pl.charmas.shoppinglist.domain.entities.ProductList;
 import pl.charmas.shoppinglist.presentation.model.ProductViewModel;
 
 public class ProductToViewModelMapper {
@@ -11,7 +12,7 @@ public class ProductToViewModelMapper {
   public ProductToViewModelMapper() {
   }
 
-  public List<ProductViewModel> toViewModel(List<Product> products) {
+  public List<ProductViewModel> toViewModel(ProductList products) {
     ArrayList<ProductViewModel> viewModels = new ArrayList<>(products.size());
     for (Product product : products) {
       viewModels.add(toViewModel(product));

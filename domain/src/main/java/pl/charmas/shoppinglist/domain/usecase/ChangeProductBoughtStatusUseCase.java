@@ -3,8 +3,9 @@ package pl.charmas.shoppinglist.domain.usecase;
 import javax.inject.Inject;
 import pl.charmas.shoppinglist.domain.datasource.ProductsDataSource;
 import pl.charmas.shoppinglist.domain.entities.Product;
+import pl.charmas.shoppinglist.domain.entities.ProductList;
 
-public class ChangeProductBoughtStatusUseCase implements UseCase<Product, ChangeProductBoughtStatusUseCase.ChangeProductStatusRequest> {
+public class ChangeProductBoughtStatusUseCase implements UseCase<Void, ChangeProductBoughtStatusUseCase.ChangeProductStatusRequest> {
   private final ProductsDataSource productsDataSource;
 
   @Inject
@@ -13,15 +14,16 @@ public class ChangeProductBoughtStatusUseCase implements UseCase<Product, Change
   }
 
   @Override
-  public Product execute(final ChangeProductStatusRequest request) {
-    Product currentProduct = productsDataSource.getProduct(request.productId);
-    Product updatedProduct;
+  public Void execute(final ChangeProductStatusRequest request) {
+    ProductList productList = productsDataSource.getProductList();
+    Product currentProduct = productList.getProduct(request.productId);
     if (request.boughtStatus) {
-      updatedProduct = currentProduct.markBought();
+      currentProduct.markBought();
     } else {
-      updatedProduct = currentProduct.markNotBought();
+      currentProduct.markNotBought();
     }
-    return productsDataSource.updateProduct(updatedProduct);
+    productsDataSource.saveProductList(productList);
+    return null;
   }
 
   public static class ChangeProductStatusRequest {

@@ -1,17 +1,22 @@
 package pl.charmas.shoppinglist.data.datasource;
 
+import java.util.Collections;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.charmas.shoppinglist.data.entity.mappers.ProductEntityMapper;
 import pl.charmas.shoppinglist.data.store.ProductEntityStore;
 import pl.charmas.shoppinglist.domain.entities.Product;
+import pl.charmas.shoppinglist.domain.entities.ProductList;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-public class ProductsDataSourceImplTest {
+@SuppressWarnings("unchecked") public class ProductsDataSourceImplTest {
 
   @Mock ProductEntityStore store;
   ProductsDataSourceImpl dataSource;
@@ -21,12 +26,13 @@ public class ProductsDataSourceImplTest {
     dataSource = new ProductsDataSourceImpl(store, new ProductEntityMapper());
   }
 
-  @Test public void testShouldCreateProductWithProperId() throws Exception {
-    long availableId = 5l;
-    when(store.getCreateNextId()).thenReturn(availableId);
+  @Test
+  public void testShouldMapProductListAndStoreIt() throws Exception {
+    dataSource.saveProductList(new ProductList(Collections.singletonList(new Product(0, "test", true))));
 
-    Product product = dataSource.createProduct("Sample", true);
+    ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
+    verify(store, times(1)).storeAllProducts(captor.capture());
 
-    assertEquals(product.getId(), 5);
+    assertEquals(captor.getValue().size(), 1);
   }
 }

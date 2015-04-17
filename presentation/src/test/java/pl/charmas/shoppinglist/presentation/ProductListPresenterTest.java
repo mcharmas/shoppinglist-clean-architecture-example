@@ -9,6 +9,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.charmas.shoppinglist.domain.entities.Product;
+import pl.charmas.shoppinglist.domain.entities.ProductList;
 import pl.charmas.shoppinglist.domain.usecase.ChangeProductBoughtStatusUseCase;
 import pl.charmas.shoppinglist.domain.usecase.ListProductsUseCase;
 import pl.charmas.shoppinglist.domain.usecase.RemoveAllBoughtProductsUseCase;
@@ -47,7 +48,7 @@ public class ProductListPresenterTest {
   }
 
   @Test public void testShouldMapProductsToViewModel() throws Exception {
-    List<Product> products = Collections.singletonList(new Product(0, "Sample", false));
+    ProductList products = new ProductList(Collections.singletonList(new Product(0, "Sample", false)));
     when(listProductsUseCase.execute()).thenReturn(products);
 
     presenter.attachUI(ui);
@@ -57,7 +58,7 @@ public class ProductListPresenterTest {
 
   @Test public void testShouldPresentMappedModelsInUI() throws Exception {
     List<ProductViewModel> vms = Collections.singletonList(new ProductViewModel(0, "name", false));
-    when(mapper.toViewModel(Matchers.<List<Product>>any())).thenReturn(vms);
+    when(mapper.toViewModel(Matchers.<ProductList>any())).thenReturn(vms);
 
     presenter.attachUI(ui);
 

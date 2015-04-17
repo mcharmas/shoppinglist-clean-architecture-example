@@ -3,7 +3,7 @@ package pl.charmas.shoppinglist.presentation;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import pl.charmas.shoppinglist.domain.entities.Product;
+import pl.charmas.shoppinglist.domain.entities.ProductList;
 import pl.charmas.shoppinglist.domain.usecase.ChangeProductBoughtStatusUseCase;
 import pl.charmas.shoppinglist.domain.usecase.ListProductsUseCase;
 import pl.charmas.shoppinglist.domain.usecase.RemoveAllBoughtProductsUseCase;
@@ -41,8 +41,8 @@ public class ProductListPresenter extends BasePresenter<ProductListPresenter.Pro
       execute(new ShowProgressCommand(), true);
     }
     asyncUseCase.wrap(listProductsUseCase).subscribe(
-        new Action1<List<Product>>() {
-          @Override public void call(List<Product> products) {
+        new Action1<ProductList>() {
+          @Override public void call(ProductList products) {
             execute(new PresentContentCommand(products), true);
           }
         }
@@ -51,8 +51,8 @@ public class ProductListPresenter extends BasePresenter<ProductListPresenter.Pro
 
   public void productStatusChanged(long productId, boolean isBought) {
     asyncUseCase.wrap(changeProductStatusUseCase, new ChangeProductBoughtStatusUseCase.ChangeProductStatusRequest(productId, isBought))
-        .subscribe(new Action1<Product>() {
-          @Override public void call(Product product) {
+        .subscribe(new Action1<Void>() {
+          @Override public void call(Void v) {
             updateProductList(false);
           }
         });
@@ -93,9 +93,9 @@ public class ProductListPresenter extends BasePresenter<ProductListPresenter.Pro
   }
 
   private class PresentContentCommand implements UICommand<ProductListUI> {
-    private final List<Product> products;
+    private final ProductList products;
 
-    public PresentContentCommand(List<Product> products) {
+    public PresentContentCommand(ProductList products) {
       this.products = products;
     }
 

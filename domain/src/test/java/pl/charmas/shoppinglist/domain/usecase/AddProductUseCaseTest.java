@@ -6,10 +6,11 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.charmas.shoppinglist.domain.datasource.ProductsDataSource;
+import pl.charmas.shoppinglist.domain.entities.ProductList;
 
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 public class AddProductUseCaseTest {
   @Mock ProductsDataSource productsDataSourceMock;
@@ -22,9 +23,12 @@ public class AddProductUseCaseTest {
   }
 
   @Test public void testShouldAddProduct() throws Exception {
+    ProductList productList = new ProductList(null);
+    when(productsDataSourceMock.getProductList()).thenReturn(productList);
+
     useCase.execute("Sample product");
 
-    verify(productsDataSourceMock).createProduct(eq("Sample product"), eq(false));
+    verify(productsDataSourceMock).saveProductList(productList);
   }
 
   @Test

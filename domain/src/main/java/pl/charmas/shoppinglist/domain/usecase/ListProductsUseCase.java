@@ -1,11 +1,10 @@
 package pl.charmas.shoppinglist.domain.usecase;
 
-import java.util.List;
 import javax.inject.Inject;
 import pl.charmas.shoppinglist.domain.datasource.ProductsDataSource;
-import pl.charmas.shoppinglist.domain.entities.Product;
+import pl.charmas.shoppinglist.domain.entities.ProductList;
 
-public class ListProductsUseCase implements UseCaseArgumentless<List<Product>> {
+public class ListProductsUseCase implements UseCaseArgumentless<ProductList> {
   private final ProductsDataSource productsDataSource;
 
   @Inject
@@ -14,8 +13,8 @@ public class ListProductsUseCase implements UseCaseArgumentless<List<Product>> {
   }
 
   @Override
-  public List<Product> execute() throws Exception {
+  public ProductList execute() throws Exception {
     Thread.sleep(500);
-    return productsDataSource.listAll();
+    return productsDataSource.getProductList();
   }
 }

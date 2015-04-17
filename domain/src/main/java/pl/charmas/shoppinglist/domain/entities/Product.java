@@ -3,7 +3,7 @@ package pl.charmas.shoppinglist.domain.entities;
 public class Product {
   private final long id;
   private final String name;
-  private final boolean isBought;
+  private boolean isBought;
 
   public Product(long id, String name, boolean isBought) {
     this.id = id;
@@ -15,12 +15,12 @@ public class Product {
     return id;
   }
 
-  public Product markBought() {
-    return new Product(id, name, true);
+  public void markBought() {
+    this.isBought = true;
   }
 
-  public Product markNotBought() {
-    return new Product(id, name, false);
+  public void markNotBought() {
+    this.isBought = false;
   }
 
   public String getName() {
