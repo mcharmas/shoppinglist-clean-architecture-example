@@ -1,0 +1,36 @@
+apply plugin: 'com.android.application'
+
+android {
+  compileSdkVersion Integer.parseInt(project.PROJECT_TARGET)
+  buildToolsVersion project.PROJECT_TOOLS
+
+  defaultConfig {
+    applicationId "com.charmas.shoppinglist.fragments"
+    minSdkVersion Integer.parseInt(project.PROJECT_MIN_SDK)
+    targetSdkVersion Integer.parseInt(project.PROJECT_TARGET)
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_7
+    targetCompatibility JavaVersion.VERSION_1_7
+  }
+  packagingOptions {
+    exclude 'LICENSE.txt'
+  }
+}
+
+dependencies {
+  provided 'com.squareup.dagger:dagger-compiler:1.2.1'
+
+  compile project(':ui-base')
+  compile project(':data')
+}
