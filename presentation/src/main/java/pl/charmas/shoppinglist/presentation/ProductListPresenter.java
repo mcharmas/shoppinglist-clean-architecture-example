@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import pl.charmas.shoppinglist.domain.entities.ProductList;
 import pl.charmas.shoppinglist.domain.usecase.ChangeProductBoughtStatusUseCase;
+import pl.charmas.shoppinglist.domain.usecase.ChangeProductBoughtStatusUseCase.ChangeProductStatusRequest;
 import pl.charmas.shoppinglist.domain.usecase.ListProductsUseCase;
 import pl.charmas.shoppinglist.domain.usecase.RemoveAllBoughtProductsUseCase;
 import pl.charmas.shoppinglist.presentation.async.AsyncUseCase;
@@ -36,21 +37,9 @@ public class ProductListPresenter extends BasePresenter<ProductListPresenter.Pro
     updateProductList(true);
   }
 
-  private void updateProductList(boolean withProgress) {
-    if (withProgress) {
-      execute(new ShowProgressCommand(), true);
-    }
-    asyncUseCase.wrap(listProductsUseCase).subscribe(
-        new Action1<ProductList>() {
-          @Override public void call(ProductList products) {
-            execute(new PresentContentCommand(products), true);
-          }
-        }
-    );
-  }
-
   public void productStatusChanged(long productId, boolean isBought) {
-    asyncUseCase.wrap(changeProductStatusUseCase, new ChangeProductBoughtStatusUseCase.ChangeProductStatusRequest(productId, isBought))
+    asyncUseCase.wrap(changeProductStatusUseCase,
+        new ChangeProductStatusRequest(productId, isBought))
         .subscribe(new Action1<Void>() {
           @Override public void call(Void v) {
             updateProductList(false);
@@ -59,11 +48,11 @@ public class ProductListPresenter extends BasePresenter<ProductListPresenter.Pro
   }
 
   public void onAddNewProduct() {
-    execute(new UICommand<ProductListUI>() {
+    executeOnce(new UICommand<ProductListUI>() {
       @Override public void execute(ProductListUI ui) {
         ui.navigateToAddProduct();
       }
-    }, false);
+    });
   }
 
   public void onRemoveBoughtProducts() {
@@ -76,6 +65,20 @@ public class ProductListPresenter extends BasePresenter<ProductListPresenter.Pro
 
   public void onProductAdded() {
     updateProductList(true);
+  }
+
+  private void updateProductList(boolean withProgress) {
+    if (withProgress) {
+      execute(new ShowProgressCommand(), true);
+    }
+    asyncUseCase.wrap(listProductsUseCase).subscribe(
+        new Action1<ProductList>() {
+          @Override public void call(ProductList products) {
+            List<ProductViewModel> viewModels = mapper.toViewModel(products);
+            executeRepeat(new PresentContentCommand(viewModels));
+          }
+        }
+    );
   }
 
   public interface ProductListUI extends UI {
@@ -92,15 +95,15 @@ public class ProductListPresenter extends BasePresenter<ProductListPresenter.Pro
     }
   }
 
-  private class PresentContentCommand implements UICommand<ProductListUI> {
-    private final ProductList products;
+  private static class PresentContentCommand implements UICommand<ProductListUI> {
+    private final List<ProductViewModel> products;
 
-    public PresentContentCommand(ProductList products) {
+    public PresentContentCommand(List<ProductViewModel> products) {
       this.products = products;
     }
 
     @Override public void execute(ProductListUI ui) {
-      ui.showProductList(mapper.toViewModel(products));
+      ui.showProductList(this.products);
     }
   }
 }
