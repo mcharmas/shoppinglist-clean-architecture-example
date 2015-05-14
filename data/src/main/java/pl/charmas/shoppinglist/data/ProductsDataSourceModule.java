@@ -9,7 +9,7 @@ import pl.charmas.shoppinglist.data.store.ProductEntityStore;
 import pl.charmas.shoppinglist.data.store.SharedPreferencesProductEntityStore;
 import pl.charmas.shoppinglist.domain.datasource.ProductsDataSource;
 
-@Module(complete = false, library = true)
+@Module
 public class ProductsDataSourceModule {
 
   @Provides ProductEntityStore provideEntityStore(SharedPreferencesProductEntityStore store) {

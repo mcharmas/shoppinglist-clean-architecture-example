@@ -2,7 +2,6 @@ package pl.charmas.shoppinglist.presentation;
 
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import pl.charmas.shoppinglist.domain.entities.ProductList;
 import pl.charmas.shoppinglist.domain.usecase.ChangeProductBoughtStatusUseCase;
 import pl.charmas.shoppinglist.domain.usecase.ChangeProductBoughtStatusUseCase.ChangeProductStatusRequest;
@@ -13,9 +12,10 @@ import pl.charmas.shoppinglist.presentation.base.BasePresenter;
 import pl.charmas.shoppinglist.presentation.base.UI;
 import pl.charmas.shoppinglist.presentation.model.ProductViewModel;
 import pl.charmas.shoppinglist.presentation.model.mappers.ProductToViewModelMapper;
+import pl.charmas.shoppinglist.presentation.scope.PresenterScope;
 import rx.functions.Action1;
 
-@Singleton
+@PresenterScope
 public class ProductListPresenter extends BasePresenter<ProductListPresenter.ProductListUI> {
   private final ListProductsUseCase listProductsUseCase;
   private final ChangeProductBoughtStatusUseCase changeProductStatusUseCase;

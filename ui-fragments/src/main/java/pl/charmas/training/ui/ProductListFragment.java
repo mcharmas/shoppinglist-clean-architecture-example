@@ -5,14 +5,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import dagger.Module;
+import dagger.Component;
 import java.util.List;
 import javax.inject.Inject;
 import pl.charmas.shoppinglist.presentation.ProductListPresenter;
 import pl.charmas.shoppinglist.presentation.model.ProductViewModel;
+import pl.charmas.shoppinglist.presentation.scope.PresenterScope;
 import pl.charmas.shoppinglist.ui.base.PresenterListFragment;
 
-public class ProductListFragment extends PresenterListFragment<ProductListPresenter.ProductListUI>
+public class ProductListFragment extends
+    PresenterListFragment<ProductListPresenter.ProductListUI, ProductListFragment.ProductListComponent>
     implements ProductListPresenter.ProductListUI {
 
   @Inject ProductListPresenter presenter;
@@ -21,6 +23,7 @@ public class ProductListFragment extends PresenterListFragment<ProductListPresen
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    getComponent().inject(this);
     setupPresenter(presenter, this);
     setHasOptionsMenu(true);
     onProductStatusChangedListener = new ProductListAdapter.OnProductStatusChangedListener() {
@@ -28,6 +31,12 @@ public class ProductListFragment extends PresenterListFragment<ProductListPresen
         presenter.productStatusChanged(productId, isBought);
       }
     };
+  }
+
+  @Override protected ProductListComponent onCreateComponent() {
+    return DaggerProductListFragment_ProductListComponent.builder()
+        .appComponent(((ProductListApp) getActivity().getApplication()).getComponent())
+        .build();
   }
 
   @Override public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -65,7 +74,8 @@ public class ProductListFragment extends PresenterListFragment<ProductListPresen
     if (adapter != null) {
       adapter.swapData(productViewModels);
     } else {
-      setListAdapter(new ProductListAdapter(getActivity(), productViewModels, onProductStatusChangedListener));
+      setListAdapter(
+          new ProductListAdapter(getActivity(), productViewModels, onProductStatusChangedListener));
     }
     setListShown(true);
   }
@@ -78,18 +88,13 @@ public class ProductListFragment extends PresenterListFragment<ProductListPresen
     ((ProductListFragmentActivity) getActivity()).navigateToAddProduct();
   }
 
-  @Override public void preparePresenterModules(List<Object> modules) {
-    super.preparePresenterModules(modules);
-    modules.add(new PresentationModule());
-  }
-
   public void onProductAdded() {
     presenter.onProductAdded();
   }
 
-  @Module(injects = {
-      ProductListPresenter.class,
-      ProductListFragment.class
-  }, complete = false) public static class PresentationModule {
+  @PresenterScope
+  @Component(dependencies = ProductListApp.AppComponent.class)
+  public interface ProductListComponent {
+    void inject(ProductListFragment target);
   }
 }

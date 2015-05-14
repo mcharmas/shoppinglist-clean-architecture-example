@@ -77,10 +77,7 @@ public class ProductListActivityTest extends ActivityInstrumentationTestCase2<Pr
     Mockito.verify(presenter, Mockito.times(1)).onAddNewProduct();
   }
 
-  @Module(overrides = true,
-      injects = { ProductListActivityTest.class },
-      complete = false,
-      addsTo = ProductListActivity.PresentationModule.class)
+  @Module
   static class TestModule {
 
     private final ProductListPresenter presenter;

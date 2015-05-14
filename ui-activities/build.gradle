@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
   compileSdkVersion Integer.parseInt(project.PROJECT_TARGET)
@@ -29,12 +30,13 @@ android {
 }
 
 dependencies {
-  provided 'com.squareup.dagger:dagger-compiler:1.2.1'
+  apt 'com.google.dagger:dagger-compiler:2.0'
+  provided 'org.glassfish:javax.annotation:10.0-b28'
 
   compile project(':ui-base')
   compile project(':data')
 
-  androidTestProvided 'com.squareup.dagger:dagger-compiler:1.2.1'
+  androidTestApt 'com.google.dagger:dagger-compiler:2.0'
   androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.0'
   androidTestCompile 'com.android.support.test.espresso:espresso-core:2.0'
 }

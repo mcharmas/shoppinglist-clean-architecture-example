@@ -2,36 +2,30 @@ package pl.charmas.shoppinglist.ui.base;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import java.util.List;
 import pl.charmas.shoppinglist.presentation.base.Presenter;
 import pl.charmas.shoppinglist.presentation.base.UI;
-import pl.charmas.shoppinglist.ui.base.injectors.ActivityInjector;
-import pl.charmas.shoppinglist.ui.base.injectors.Injector;
-import pl.charmas.shoppinglist.ui.base.injectors.ModuleFactory;
 
-public abstract class PresenterActivity<T extends UI> extends ActionBarActivity implements ModuleFactory {
+public abstract class PresenterActivity<T extends UI, Component> extends ActionBarActivity {
   private Presenter<T> presenter;
   private T ui;
-  private ActivityInjector activityInjector;
+  private Component component;
 
-  @Override protected void onCreate(Bundle savedInstanceState) {
+  @SuppressWarnings("unchecked")
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    activityInjector = new ActivityInjector(getLastCustomNonConfigurationInstance(), this, getBaseInjector());
-    activityInjector.inject(this);
-  }
-
-  protected Injector getBaseInjector() {
-    return (Injector) getApplication();
-  }
-
-  public void prepareInstanceModules(List<Object> modules) {
-  }
-
-  public void preparePresenterModules(List<Object> modules) {
+    component = (Component) getLastCustomNonConfigurationInstance();
   }
 
   @Override public Object onRetainCustomNonConfigurationInstance() {
-    return activityInjector.getNonConfigurationInstance();
+    return component;
+  }
+
+  protected abstract Component onCreateComponent();
+
+  protected Component getComponent() {
+    if (component == null) component = onCreateComponent();
+    return component;
   }
 
   protected void setupPresenter(Presenter<T> presenter, T ui) {

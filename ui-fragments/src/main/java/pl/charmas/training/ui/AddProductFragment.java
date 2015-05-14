@@ -6,16 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
-import dagger.Module;
-import java.util.List;
+import dagger.Component;
 import javax.inject.Inject;
 import pl.charmas.shoppinglist.presentation.AddProductPresenter;
 import pl.charmas.shoppinglist.presentation.AddProductPresenter.AddProductUI;
-import pl.charmas.shoppinglist.presentation.ProductListPresenter;
+import pl.charmas.shoppinglist.presentation.scope.PresenterScope;
 import pl.charmas.shoppinglist.ui.base.PresenterFragment;
 
 public class AddProductFragment
-    extends PresenterFragment<AddProductUI>
+    extends PresenterFragment<AddProductUI, AddProductFragment.AddProductComponent>
     implements AddProductUI {
 
   @Inject AddProductPresenter presenter;
@@ -24,7 +23,14 @@ public class AddProductFragment
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    getComponent().inject(this);
     setupPresenter(presenter, this);
+  }
+
+  @Override protected AddProductComponent onCreateComponent() {
+    return DaggerAddProductFragment_AddProductComponent.builder()
+        .appComponent(((ProductListApp) getActivity().getApplication()).getComponent())
+        .build();
   }
 
   @Override public View onCreateView(LayoutInflater inflater,
@@ -51,12 +57,11 @@ public class AddProductFragment
     Toast.makeText(getActivity(), "Product name cannot be empty.", Toast.LENGTH_SHORT).show();
   }
 
-  @Override public void prepareInstanceModules(List<Object> modules) {
-    super.prepareInstanceModules(modules);
-    modules.add(new PresenterModule());
-  }
+  @PresenterScope
+  @Component(dependencies = ProductListApp.AppComponent.class)
+  public interface AddProductComponent {
+    void inject(AddProductFragment target);
 
-  @Module(injects = { AddProductFragment.class, ProductListPresenter.class }, complete = false)
-  static class PresenterModule {
+    AddProductPresenter getPresenter();
   }
 }

@@ -1,41 +1,56 @@
 package pl.charmas.shoppinglist.ui.base;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import java.util.List;
 import pl.charmas.shoppinglist.presentation.base.Presenter;
 import pl.charmas.shoppinglist.presentation.base.UI;
-import pl.charmas.shoppinglist.ui.base.injectors.FragmentInjector;
-import pl.charmas.shoppinglist.ui.base.injectors.ModuleFactory;
 
-public class PresenterFragment<T extends UI> extends Fragment implements ModuleFactory {
+public abstract class PresenterFragment<T extends UI, Component> extends Fragment {
   private static final String STATE_UUID = "STATE_UUID";
 
   private Presenter<T> presenter;
   private T ui;
-  private FragmentInjector fragmentInjector;
+  private Component component;
   private String fragmentUUID;
 
-  @Override public void onCreate(Bundle savedInstanceState) {
+  @Override public void onAttach(Activity activity) {
+    super.onAttach(activity);
+    if (!(activity instanceof PresenterFragmentActivity)) {
+      throw new ClassCastException("This fragment must be contained by PresenterFragmentActivity");
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     if (savedInstanceState == null) {
       fragmentUUID = java.util.UUID.randomUUID().toString();
     } else {
       fragmentUUID = savedInstanceState.getString(STATE_UUID);
     }
-    try {
-      PresenterFragmentActivity presenterActivity = (PresenterFragmentActivity) getActivity();
-      fragmentInjector = new FragmentInjector(fragmentUUID, presenterActivity, this);
-      fragmentInjector.inject(this);
-    } catch (ClassCastException ex) {
-      throw new IllegalStateException("This fragment must be contained by BasePresenterFragmentActivity");
-    }
+    component = (Component) getPresenterActivity().getComponentForFragment(fragmentUUID);
+  }
+
+  private PresenterFragmentActivity getPresenterActivity() {
+    return (PresenterFragmentActivity) getActivity();
   }
 
   @Override public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putString(STATE_UUID, fragmentUUID);
+  }
+
+  protected abstract Component onCreateComponent();
+
+  protected Component getComponent() {
+    if (component == null) {
+      component = onCreateComponent();
+      getPresenterActivity().setComponentForFragment(fragmentUUID, component);
+    }
+    return component;
   }
 
   @Override public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -56,15 +71,7 @@ public class PresenterFragment<T extends UI> extends Fragment implements ModuleF
   @Override public void onDestroy() {
     super.onDestroy();
     if (!getActivity().isChangingConfigurations()) {
-      fragmentInjector.destroyGraph();
+      getPresenterActivity().clearComponentForFragment(fragmentUUID);
     }
-  }
-
-  @Override public void prepareInstanceModules(List<Object> modules) {
-
-  }
-
-  @Override public void preparePresenterModules(List<Object> modules) {
-
   }
 }

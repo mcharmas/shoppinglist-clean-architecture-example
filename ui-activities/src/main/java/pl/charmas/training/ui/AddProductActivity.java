@@ -5,14 +5,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-import dagger.Module;
-import java.util.List;
+import dagger.Component;
 import javax.inject.Inject;
 import pl.charmas.shoppinglist.presentation.AddProductPresenter;
 import pl.charmas.shoppinglist.presentation.AddProductPresenter.AddProductUI;
+import pl.charmas.shoppinglist.presentation.scope.PresenterScope;
 import pl.charmas.shoppinglist.ui.base.PresenterActivity;
 
-public class AddProductActivity extends PresenterActivity<AddProductUI> implements AddProductUI {
+public class AddProductActivity
+    extends PresenterActivity<AddProductUI, AddProductActivity.AddProductComponent>
+    implements AddProductUI {
 
   @Inject AddProductPresenter presenter;
 
@@ -20,6 +22,7 @@ public class AddProductActivity extends PresenterActivity<AddProductUI> implemen
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    getComponent().inject(this);
     setupPresenter(presenter, this);
     setContentView(R.layout.activity_add_product);
     productNameView = (EditText) findViewById(R.id.product_name_view);
@@ -28,6 +31,13 @@ public class AddProductActivity extends PresenterActivity<AddProductUI> implemen
         presenter.onProductNameComplete(productNameView.getText().toString());
       }
     });
+  }
+
+  @Override protected AddProductComponent onCreateComponent() {
+    ProductListApp.AppComponent appComponent = ((ProductListApp) getApplication()).getComponent();
+    return DaggerAddProductActivity_AddProductComponent.builder()
+        .appComponent(appComponent)
+        .build();
   }
 
   @Override public void navigateBack() {
@@ -39,12 +49,11 @@ public class AddProductActivity extends PresenterActivity<AddProductUI> implemen
     Toast.makeText(this, "Product name cannot be empty", Toast.LENGTH_SHORT).show();
   }
 
-  @Override public void preparePresenterModules(List<Object> modules) {
-    super.preparePresenterModules(modules);
-    modules.add(new AddProductPresenterModule());
-  }
+  @PresenterScope
+  @Component(dependencies = ProductListApp.AppComponent.class)
+  public interface AddProductComponent {
+    void inject(AddProductActivity target);
 
-  @Module(injects = { AddProductActivity.class, AddProductPresenter.class }, complete = false)
-  public static class AddProductPresenterModule {
+    AddProductPresenter getPresenter();
   }
 }

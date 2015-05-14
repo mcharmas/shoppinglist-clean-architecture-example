@@ -2,17 +2,15 @@ package pl.charmas.shoppinglist.ui.base;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import dagger.ObjectGraph;
 import java.util.HashMap;
 import java.util.Map;
-import pl.charmas.shoppinglist.ui.base.injectors.Injector;
 
 public class PresenterFragmentActivity extends ActionBarActivity {
-  private Map<String, ObjectGraph> fragmentPresenterGraphs;
+  private Map<String, Object> fragmentPresenterGraphs;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     //noinspection unchecked
-    fragmentPresenterGraphs = (Map<String, ObjectGraph>) getLastCustomNonConfigurationInstance();
+    fragmentPresenterGraphs = (Map<String, Object>) getLastCustomNonConfigurationInstance();
     if (fragmentPresenterGraphs == null) {
       fragmentPresenterGraphs = new HashMap<>();
     }
@@ -23,19 +21,15 @@ public class PresenterFragmentActivity extends ActionBarActivity {
     return fragmentPresenterGraphs;
   }
 
-  public ObjectGraph getPresenterGraphForFragment(String id) {
+  public Object getComponentForFragment(String id) {
     return fragmentPresenterGraphs.get(id);
   }
 
-  public void clearPresenterGraphForFragment(String id) {
+  public void clearComponentForFragment(String id) {
     fragmentPresenterGraphs.remove(id);
   }
 
-  public void setPresenterGraphForFragment(String id, ObjectGraph presenterGraph) {
+  public void setComponentForFragment(String id, Object presenterGraph) {
     fragmentPresenterGraphs.put(id, presenterGraph);
-  }
-
-  public Injector getBaseInjector() {
-    return (Injector) getApplication();
   }
 }
