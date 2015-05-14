@@ -35,8 +35,4 @@ dependencies {
 
   compile project(':ui-base')
   compile project(':data')
-
-  androidTestApt 'com.google.dagger:dagger-compiler:2.0'
-  androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.0'
-  androidTestCompile 'com.android.support.test.espresso:espresso-core:2.0'
 }
