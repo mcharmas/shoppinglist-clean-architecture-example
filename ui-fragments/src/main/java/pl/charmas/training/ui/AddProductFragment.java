@@ -61,7 +61,5 @@ public class AddProductFragment
   @Component(dependencies = ProductListApp.AppComponent.class)
   public interface AddProductComponent {
     void inject(AddProductFragment target);
-
-    AddProductPresenter getPresenter();
   }
 }

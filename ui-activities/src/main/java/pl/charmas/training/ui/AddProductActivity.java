@@ -53,7 +53,5 @@ public class AddProductActivity
   @Component(dependencies = ProductListApp.AppComponent.class)
   public interface AddProductComponent {
     void inject(AddProductActivity target);
-
-    AddProductPresenter getPresenter();
   }
 }

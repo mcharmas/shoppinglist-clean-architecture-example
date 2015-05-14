@@ -101,7 +101,5 @@ public class ProductListActivity extends
   @Component(dependencies = ProductListApp.AppComponent.class)
   public interface ProductListActivityComponent {
     void inject(ProductListActivity target);
-
-    ProductListPresenter getPresenter();
   }
 }
