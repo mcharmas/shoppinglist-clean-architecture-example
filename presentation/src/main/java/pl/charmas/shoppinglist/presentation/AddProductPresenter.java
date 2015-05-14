@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import pl.charmas.shoppinglist.domain.entities.Product;
 import pl.charmas.shoppinglist.domain.usecase.AddProductUseCase;
+import pl.charmas.shoppinglist.domain.usecase.exceptions.ValidationException;
 import pl.charmas.shoppinglist.presentation.async.AsyncUseCase;
 import pl.charmas.shoppinglist.presentation.base.BasePresenter;
 import pl.charmas.shoppinglist.presentation.base.UI;
@@ -20,16 +21,21 @@ public class AddProductPresenter extends BasePresenter<AddProductPresenter.AddPr
   }
 
   public void onProductNameComplete(final String productName) {
-    if (productName == null || productName.isEmpty()) {
-      executeOnce(new ShowValidationErrorCommand());
-    } else {
-      asyncUseCase.wrap(addProductUseCase, productName)
-          .subscribe(new Action1<Product>() {
-            @Override public void call(Product product) {
-              executeRepeat(new NavigateBackCommand());
-            }
-          });
-    }
+    asyncUseCase.wrap(addProductUseCase, productName)
+        .subscribe(
+            new Action1<Product>() {
+              @Override public void call(Product product) {
+                executeRepeat(new NavigateBackCommand());
+              }
+            },
+            new Action1<Throwable>() {
+              @Override public void call(Throwable throwable) {
+                if (throwable instanceof ValidationException) {
+                  executeOnce(new ShowValidationErrorCommand());
+                }
+                // TODO: handle unknown error
+              }
+            });
   }
 
   public interface AddProductUI extends UI {

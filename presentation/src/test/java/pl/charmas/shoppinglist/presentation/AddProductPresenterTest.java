@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.charmas.shoppinglist.domain.entities.Product;
 import pl.charmas.shoppinglist.domain.usecase.AddProductUseCase;
+import pl.charmas.shoppinglist.domain.usecase.exceptions.ValidationException;
 import pl.charmas.shoppinglist.presentation.AddProductPresenter.AddProductUI;
 
 import static org.mockito.Matchers.anyString;
@@ -29,14 +30,9 @@ public class AddProductPresenterTest {
   }
 
   @Test
-  public void testShouldValidateEmptyProductName() throws Exception {
+  public void testShouldValidateNotifyUIOnValidationError() throws Exception {
+    when(addProductUseCase.execute(anyString())).thenThrow(new ValidationException(""));
     this.presenter.onProductNameComplete("");
-    verify(ui, times(1)).showValidationError();
-  }
-
-  @Test
-  public void testShouldValidateNullProductName() throws Exception {
-    this.presenter.onProductNameComplete(null);
     verify(ui, times(1)).showValidationError();
   }
 
