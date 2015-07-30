@@ -53,6 +53,7 @@ public class PresenterListActivity<T extends UI> extends ListActivity implements
 
   @Override protected void onStop() {
     super.onStop();
+    presenter.detachUI();
     lifecycleNotifier.onStop();
   }
 

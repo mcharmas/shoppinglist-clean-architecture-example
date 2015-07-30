@@ -51,6 +51,7 @@ public abstract class PresenterActivity<T extends UI> extends ActionBarActivity 
 
   @Override protected void onStop() {
     super.onStop();
+    presenter.detachUI();
     lifecycleNotifier.onStop();
   }
 

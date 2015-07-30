@@ -49,8 +49,8 @@ public class PresenterFragment<T extends UI> extends Fragment implements ModuleF
   }
 
   @Override public void onDestroyView() {
-    super.onDestroyView();
     presenter.detachUI();
+    super.onDestroyView();
   }
 
   @Override public void onDestroy() {
