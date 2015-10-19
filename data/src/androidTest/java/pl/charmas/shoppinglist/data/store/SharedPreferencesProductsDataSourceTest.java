@@ -5,35 +5,33 @@ import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import pl.charmas.shoppinglist.data.entity.ProductEntity;
+import pl.charmas.shoppinglist.domain.entities.Product;
+import pl.charmas.shoppinglist.domain.entities.ProductList;
 
-public class SharedPreferencesProductEntityStoreTest extends AndroidTestCase {
-  private SharedPreferencesProductEntityStore store;
+public class SharedPreferencesProductsDataSourceTest extends AndroidTestCase {
+  private SharedPreferencesProductsDataSource store;
 
   @Override public void setUp() throws Exception {
     super.setUp();
-    store = new SharedPreferencesProductEntityStore(
+    store = new SharedPreferencesProductsDataSource(
         getAndClearSharedPreferences(),
-        new SharedPreferencesProductEntityStore.EntityJsonMapper()
+        new SharedPreferencesProductsDataSource.ProductListJsonMapper()
     );
   }
 
   public void testShouldStoreEmptyList() throws Exception {
-    store.storeAllProducts(Collections.<ProductEntity>emptyList());
-    assertEquals(store.getAllProduct().size(), 0);
+    store.saveProductList(new ProductList(Collections.<Product>emptyList()));
+    assertEquals(store.getProductList().size(), 0);
   }
 
   public void testShouldStoreListWithMultipleElements() throws Exception {
-    store.storeAllProducts(Arrays.asList(
-        new ProductEntity(0, "sample", true),
-        new ProductEntity(1, "sample", false)
-    ));
+    store.saveProductList(new ProductList(Arrays.asList(
+        new Product(0, "sample", true),
+        new Product(1, "sample", false)
+    )));
 
-    List<ProductEntity> products = store.getAllProduct();
+    ProductList products = store.getProductList();
     assertEquals(2, products.size());
-    assertEquals(0, products.get(0).getId());
-    assertEquals(1, products.get(1).getId());
   }
 
   private SharedPreferences getAndClearSharedPreferences() {
